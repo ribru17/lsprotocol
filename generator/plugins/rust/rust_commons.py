@@ -294,6 +294,7 @@ def generate_special_types(model: model.LSPModel, types: TypeData) -> None:
                         property.type, types, model, property.optional
                     )
                     if "SelectionRange" in prop_type:
+                        lines += ['#[serde(skip_serializing_if = "Option::is_none")]']
                         prop_type = prop_type.replace(
                             "SelectionRange", "Box<SelectionRange>"
                         )
@@ -589,8 +590,7 @@ def generate_property(
     )
     optional = (
         ['#[serde(skip_serializing_if = "Option::is_none")]']
-        if is_nullable_property(prop_def) and not prop_def.optional
-        else []
+        if prop_def.optional else []
     )
 
     if prop_name in ["type"]:
