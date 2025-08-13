@@ -123,26 +123,15 @@ impl<'de> Deserialize<'de> for LSPNull {
 /// convenience it is allowed and assumed that all these properties are
 /// optional as well.
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(untagged)]
-pub enum LSPAny {
-    String(String),
-    Integer(i32),
-    UInteger(u32),
-    Decimal(Decimal),
-    Boolean(bool),
-    Object(LSPObject),
-    Array(LSPArray),
-    Null,
-}
+pub type LSPAny = serde_json::Value;
 
 /// LSP object definition.
 /// @since 3.17.0
-type LSPObject = serde_json::Value;
+pub type LSPObject = serde_json::Map<String, LSPAny>;
 
 /// LSP arrays.
 /// @since 3.17.0
-type LSPArray = Vec<LSPAny>;
+pub type LSPArray = Vec<LSPAny>;
 
 /// A selection range represents a part of a selection hierarchy. A selection range
 /// may have a parent selection range that contains it.

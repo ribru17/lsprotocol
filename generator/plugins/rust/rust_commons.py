@@ -259,23 +259,12 @@ def generate_special_types(model: model.LSPModel, types: TypeData) -> None:
 
             if type_def.name == "LSPAny":
                 lines += [
-                    "#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]",
-                    "#[serde(untagged)]",
-                    "pub enum LSPAny {",
-                    "    String(String),",
-                    "    Integer(i32),",
-                    "    UInteger(u32),",
-                    "    Decimal(Decimal),",
-                    "    Boolean(bool),",
-                    "    Object(LSPObject),",
-                    "    Array(LSPArray),",
-                    "    Null,",
-                    "}",
+                    "pub type LSPAny = serde_json::Value;",
                 ]
             elif type_def.name == "LSPObject":
-                lines += ["type LSPObject = serde_json::Value;"]
+                lines += ["pub type LSPObject = serde_json::Map<String, LSPAny>;"]
             elif type_def.name == "LSPArray":
-                lines += ["type LSPArray = Vec<LSPAny>;"]
+                lines += ["pub type LSPArray = Vec<LSPAny>;"]
             elif type_def.name == "SelectionRange":
                 lines += [
                     "#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]",
