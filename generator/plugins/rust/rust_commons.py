@@ -203,11 +203,27 @@ def generate_custom_enum(type_data: TypeData) -> None:
         model.ReferenceType(kind="reference", name="LSPNull"),
         "LSPNull",
         [
-            "/// This allows a field to always have null or empty value.",
-            "#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]",
-            "#[serde(untagged)]",
-            "pub enum LSPNull {",
-            "    None,",
+            "/// Represents JSON `null`.",
+            "#[derive(PartialEq, Eq, Clone, Copy, Debug, Default)]",
+            "pub struct LSPNull;",
+            "",
+            "impl Serialize for LSPNull {",
+            "    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>",
+            "    where",
+            "        S: Serializer,",
+            "    {",
+            "        ().serialize(serializer)",
+            "    }",
+            "}",
+            "",
+            "impl<'de> Deserialize<'de> for LSPNull {",
+            "    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>",
+            "    where",
+            "        D: Deserializer<'de>,",
+            "    {",
+            "        let _: () = Deserialize::deserialize(deserializer)?;",
+            "        Ok(Self)",
+            "    }",
             "}",
             "",
         ],
@@ -465,7 +481,7 @@ def get_type_name(
             raise ValueError(
                 f"OR type with more than out of range count of subtypes: {type_def}"
             )
-        optional = optional or is_special(type_def)
+        optional = optional or is_nullable(type_def)
     elif type_def.kind == "literal":
         name = generate_literal_struct_type(type_def, types, spec, name_context)
     elif type_def.kind == "stringLiteral":
@@ -474,7 +490,7 @@ def get_type_name(
         # one of the allowed values. This should be handled by the caller. This cannot be
         # handled here because all this does is handle type names.
     elif type_def.kind == "tuple":
-        optional = optional or is_special(type_def)
+        optional = optional or is_nullable(type_def)
         sub_set_items = [
             sub_spec
             for sub_spec in type_def.items
@@ -494,7 +510,7 @@ def get_type_name(
     return f"Option<{name}>" if optional else name
 
 
-def is_special(type_def: model.LSP_TYPE_SPEC) -> bool:
+def is_nullable(type_def: model.LSP_TYPE_SPEC) -> bool:
     if type_def.kind in ["or", "tuple"]:
         for item in type_def.items:
             if item.kind == "base" and item.name == "null":
@@ -502,8 +518,8 @@ def is_special(type_def: model.LSP_TYPE_SPEC) -> bool:
     return False
 
 
-def is_special_property(prop_def: model.Property) -> bool:
-    return is_special(prop_def.type)
+def is_nullable_property(prop_def: model.Property) -> bool:
+    return is_nullable(prop_def.type)
 
 
 def is_string_literal_property(prop_def: model.Property) -> bool:
@@ -573,7 +589,7 @@ def generate_property(
     )
     optional = (
         ['#[serde(skip_serializing_if = "Option::is_none")]']
-        if is_special_property(prop_def) and not prop_def.optional
+        if is_nullable_property(prop_def) and not prop_def.optional
         else []
     )
 

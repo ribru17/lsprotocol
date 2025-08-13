@@ -8,7 +8,7 @@
 // 3. Run command: `python -m nox --session build_lsp`
 
 use rust_decimal::Decimal;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::collections::HashMap;
 use url::Url;
 /// This type allows extending any string enum to support custom values.
@@ -94,11 +94,27 @@ pub enum OR7<T, U, V, W, X, Y, Z> {
     Z(Z),
 }
 
-/// This allows a field to always have null or empty value.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(untagged)]
-pub enum LSPNull {
-    None,
+/// Represents JSON `null`.
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Default)]
+pub struct LSPNull;
+
+impl Serialize for LSPNull {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        ().serialize(serializer)
+    }
+}
+
+impl<'de> Deserialize<'de> for LSPNull {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let _: () = Deserialize::deserialize(deserializer)?;
+        Ok(Self)
+    }
 }
 
 /// The LSP any type.

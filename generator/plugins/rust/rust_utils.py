@@ -56,7 +56,7 @@ def generate_lib_rs(spec: model.LSPModel) -> List[str]:
         "",
     ]
     lines += [
-        "use serde::{Serialize, Deserialize};",
+        "use serde::{Serialize, Deserialize, Serializer, Deserializer};",
         "use std::collections::HashMap;",
         "use url::Url;",
         "use rust_decimal::Decimal;",
