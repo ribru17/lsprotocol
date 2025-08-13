@@ -325,14 +325,6 @@ def generate_notification(
                     optional=True,
                 )
             ]
-    else:
-        properties += [
-            model.Property(
-                name="params",
-                type=model.ReferenceType(kind="reference", name="LSPNull"),
-                optional=True,
-            )
-        ]
 
     inner = []
     for prop_def in properties:
@@ -416,14 +408,6 @@ def generate_request(
                     optional=True,
                 )
             ]
-    else:
-        properties += [
-            model.Property(
-                name="params",
-                type=model.ReferenceType(kind="reference", name="LSPNull"),
-                optional=True,
-            )
-        ]
 
     inner = []
     for prop_def in properties:

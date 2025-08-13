@@ -10099,9 +10099,6 @@ pub struct ExitNotification {
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub params: Option<LSPNull>,
 }
 
 /// The configuration change notification is sent from the client to the server
@@ -10416,9 +10413,6 @@ pub struct WorkspaceFoldersRequest {
 
     /// The request id.
     pub id: LSPId,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub params: Option<LSPNull>,
 }
 
 /// Response to the [WorkspaceFoldersRequest].
@@ -10593,9 +10587,6 @@ pub struct FoldingRangeRefreshRequest {
 
     /// The request id.
     pub id: LSPId,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub params: Option<LSPNull>,
 }
 
 /// Response to the [FoldingRangeRefreshRequest].
@@ -10928,9 +10919,6 @@ pub struct SemanticTokensRefreshRequest {
 
     /// The request id.
     pub id: LSPId,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub params: Option<LSPNull>,
 }
 
 /// Response to the [SemanticTokensRefreshRequest].
@@ -11314,9 +11302,6 @@ pub struct InlineValueRefreshRequest {
 
     /// The request id.
     pub id: LSPId,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub params: Option<LSPNull>,
 }
 
 /// Response to the [InlineValueRefreshRequest].
@@ -11419,9 +11404,6 @@ pub struct InlayHintRefreshRequest {
 
     /// The request id.
     pub id: LSPId,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub params: Option<LSPNull>,
 }
 
 /// Response to the [InlayHintRefreshRequest].
@@ -11522,9 +11504,6 @@ pub struct DiagnosticRefreshRequest {
 
     /// The request id.
     pub id: LSPId,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub params: Option<LSPNull>,
 }
 
 /// Response to the [DiagnosticRefreshRequest].
@@ -11769,9 +11748,6 @@ pub struct ShutdownRequest {
 
     /// The request id.
     pub id: LSPId,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub params: Option<LSPNull>,
 }
 
 /// Response to the [ShutdownRequest].
@@ -12357,9 +12333,6 @@ pub struct CodeLensRefreshRequest {
 
     /// The request id.
     pub id: LSPId,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub params: Option<LSPNull>,
 }
 
 /// Response to the [CodeLensRefreshRequest].
