@@ -3839,7 +3839,7 @@ pub struct InitializeParams {
     /// @deprecated in favour of rootUri.
     #[deprecated(note = r#"in favour of rootUri."#)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub root_path: Option<String>,
+    pub root_path: Option<OR2<String, LSPNull>>,
 
     /// The rootUri of the workspace. Is null if no
     /// folder is open. If both `rootPath` and `rootUri` are set
@@ -3865,7 +3865,7 @@ pub struct InitializeParams {
     ///
     /// @since 3.6.0
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub workspace_folders: Option<Vec<WorkspaceFolder>>,
+    pub workspace_folders: Option<OR2<Vec<WorkspaceFolder>, LSPNull>>,
 }
 
 /// The result returned from an initialize request.
@@ -4463,7 +4463,7 @@ pub struct SignatureHelp {
     /// mandatory (but still nullable) to better express the active parameter if
     /// the active signature does have any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub active_parameter: Option<u32>,
+    pub active_parameter: Option<OR2<u32, LSPNull>>,
 
     /// The active signature. If omitted or the value lies outside the
     /// range of `signatures` the value defaults to zero or is ignored if
@@ -6422,7 +6422,7 @@ pub struct _InitializeParams {
     /// @deprecated in favour of rootUri.
     #[deprecated(note = r#"in favour of rootUri."#)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub root_path: Option<String>,
+    pub root_path: Option<OR2<String, LSPNull>>,
 
     /// The rootUri of the workspace. Is null if no
     /// folder is open. If both `rootPath` and `rootUri` are set
@@ -6452,7 +6452,7 @@ pub struct WorkspaceFoldersInitializeParams {
     ///
     /// @since 3.6.0
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub workspace_folders: Option<Vec<WorkspaceFolder>>,
+    pub workspace_folders: Option<OR2<Vec<WorkspaceFolder>, LSPNull>>,
 }
 
 /// Defines the capabilities provided by a language
@@ -7021,7 +7021,7 @@ pub struct SignatureInformation {
     ///
     /// @since 3.16.0
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub active_parameter: Option<u32>,
+    pub active_parameter: Option<OR2<u32, LSPNull>>,
 
     /// The human-readable doc-comment of this signature. Will be shown
     /// in the UI but can be omitted.

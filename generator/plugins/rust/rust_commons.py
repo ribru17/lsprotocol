@@ -372,8 +372,9 @@ def lsp_to_base_types(lsp_type: model.BaseType):
         return "u32"
     elif lsp_type.name in ["boolean"]:
         return "bool"
+    elif lsp_type.name in ["null"]:
+        return "LSPNull"
 
-    # null should be handled by the caller as an Option<> type
     raise ValueError(f"Unknown base type: {lsp_type.name}")
 
 
@@ -470,7 +471,7 @@ def get_type_name(
         sub_set_items = [
             sub_spec
             for sub_spec in type_def.items
-            if not (sub_spec.kind == "base" and sub_spec.name == "null")
+            if not (sub_spec.kind == "base" and sub_spec.name == "null" and not optional)
         ]
         sub_types = [get_type_name(sub_spec, types, spec) for sub_spec in sub_set_items]
         sub_types_str = ", ".join(sub_types)
@@ -491,12 +492,12 @@ def get_type_name(
         # one of the allowed values. This should be handled by the caller. This cannot be
         # handled here because all this does is handle type names.
     elif type_def.kind == "tuple":
-        optional = optional or is_nullable(type_def)
         sub_set_items = [
             sub_spec
             for sub_spec in type_def.items
-            if not (sub_spec.kind == "base" and sub_spec.name == "null")
+            if not (sub_spec.kind == "base" and sub_spec.name == "null" and not optional)
         ]
+        optional = optional or is_nullable(type_def)
         sub_types = [get_type_name(sub_spec, types, spec) for sub_spec in sub_set_items]
         sub_types_str = ", ".join(sub_types)
         if len(sub_types) >= 2:
