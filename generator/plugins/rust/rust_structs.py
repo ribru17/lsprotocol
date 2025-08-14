@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, Tuple
 
 import generator.model as model
 
@@ -92,7 +92,7 @@ def _get_all_reference_similar_code(
     alias: model.TypeAlias,
     types: TypeData,
     spec: model.LSPModel,
-) -> List[str]:
+) -> Tuple[List[str], bool]:
     items = alias.type.items
     assert _is_all_reference_similar_type(alias)
 
@@ -113,8 +113,11 @@ def _get_all_reference_similar_code(
     lines = []
     value = 0
     field_names = []
+    defaultable = False
     for item in list(items):
         if item.kind == "base" and item.name == "null":
+            defaultable = True
+            lines += ["#[default]"]
             lines += ["None,"]
             field_names += ["None"]
         elif item.kind == "base":
@@ -169,7 +172,7 @@ def _get_all_reference_similar_code(
             lines += [f"{name}({item.name}),"]
         else:
             raise ValueError(f"Unknown type {item}")
-    return lines
+    return lines, defaultable
 
 
 def _base_to_field_name(base_name: str) -> str:
@@ -205,20 +208,25 @@ def _generate_or_type_alias(
 ) -> List[str]:
     inner = []
 
+    defaultable = False
     if len(alias_def.type.items) == 2 and _is_some_array_type(alias_def.type.items):
         inner += _get_some_array_code(alias_def.type.items, types, spec)
     elif _is_all_reference_similar_type(alias_def):
-        inner += _get_all_reference_similar_code(alias_def, types, spec)
+        result = _get_all_reference_similar_code(alias_def, types, spec)
+        inner += result[0]
+        defaultable = result[1]
     else:
         index = 0
 
         for sub_type in alias_def.type.items:
             if sub_type.kind == "base" and sub_type.name == "null":
+                inner += "#[default]"
                 inner += ["None,"]
+                defaultable = True
             else:
                 inner += [f"ValueType{index}({get_type_name(sub_type, types, spec)}),"]
             index += 1
-    return type_alias_wrapper(alias_def, inner)
+    return type_alias_wrapper(alias_def, inner, defaultable)
 
 
 def generate_type_alias(
@@ -270,7 +278,7 @@ def generate_struct(
     for prop_def in get_extended_properties(struct_def, spec):
         inner += generate_property(prop_def, types, spec)
 
-    lines = struct_wrapper(struct_def, inner)
+    lines = struct_wrapper(struct_def, inner, types, spec)
     types.add_type_info(struct_def, struct_def.name, lines)
 
 
@@ -330,7 +338,7 @@ def generate_notification(
     for prop_def in properties:
         inner += generate_property(prop_def, types, spec)
 
-    lines = struct_wrapper(notification_def, inner)
+    lines = struct_wrapper(notification_def, inner, types, spec)
     types.add_type_info(
         notification_def, get_message_type_name(notification_def), lines
     )
@@ -413,7 +421,7 @@ def generate_request(
     for prop_def in properties:
         inner += generate_property(prop_def, types, spec)
 
-    lines = struct_wrapper(request_def, inner)
+    lines = struct_wrapper(request_def, inner, types, spec)
     types.add_type_info(request_def, get_message_type_name(request_def), lines)
 
 
@@ -460,7 +468,7 @@ def generate_response(
     for prop_def in properties:
         inner += generate_property(prop_def, types, spec)
 
-    lines = struct_wrapper(response_def, inner)
+    lines = struct_wrapper(response_def, inner, types, spec)
     types.add_type_info(response_def, response_def.name, lines)
 
 

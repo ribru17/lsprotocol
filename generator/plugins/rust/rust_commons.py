@@ -267,7 +267,7 @@ def generate_special_types(model: model.LSPModel, types: TypeData) -> None:
                 lines += ["pub type LSPArray = Vec<LSPAny>;"]
             elif type_def.name == "SelectionRange":
                 lines += [
-                    "#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]",
+                    "#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone, Default)]",
                     "pub struct SelectionRange {",
                 ]
                 for property in type_def.properties:
@@ -430,6 +430,54 @@ def generate_and_type(
     name_context: Optional[str] = None,
 ) -> str:
     pass
+
+def is_defaultable(
+    type_def: model.LSP_TYPE_SPEC,
+    types: TypeData,
+    spec: model.LSPModel,
+    optional: Optional[bool] = None,
+) -> bool:
+    if optional:
+        return True
+    if type_def.kind == "reference":
+        val = get_from_name(type_def.name, spec)
+
+        if not val:
+            return type_def.name in ["LSPIdOptional"]
+
+        if isinstance(val, model.Structure):
+            for prop in get_extended_properties(val, spec):
+                if not is_defaultable(prop.type, types, spec, prop.optional):
+                    return False
+
+            return True
+
+        if isinstance(val, model.Enum):
+            return False
+
+        if isinstance(val, model.TypeAlias):
+            return is_defaultable(val.type, types, spec)
+
+        return False
+    elif type_def.kind == "array":
+        return True
+    elif type_def.kind == "map":
+        return True
+    elif type_def.kind == "base":
+        return type_def.name not in ["DocumentUri", "URI"]
+    elif type_def.kind == "or":
+        return is_nullable(type_def)
+    elif type_def.kind in ["literal", "stringLiteral"]:
+        return True
+    elif type_def.kind == "tuple":
+        defaultable = True
+        for sub_spec in type_def.items:
+            if not is_defaultable(sub_spec, types, spec):
+                defaultable = False
+                break
+        return defaultable
+    else:
+        raise ValueError(f"Unknown type kind: {type_def.kind}")
 
 
 def get_type_name(
@@ -625,13 +673,25 @@ def get_name(
 def struct_wrapper(
     type_def: Union[model.Structure, model.Notification, model.Request],
     inner: List[str],
+    types: TypeData,
+    spec: model.LSPModel,
 ) -> List[str]:
     name = get_name(type_def)
+    default = ""
+    if isinstance(type_def, model.Structure):
+        defaultable = True
+        for prop in get_extended_properties(type_def, spec):
+            if not is_defaultable(prop.type, types, spec, prop.optional):
+                defaultable = False
+                break
+        if defaultable:
+            default = ", Default"
+
     lines = (
         _get_doc(type_def.documentation)
         + generate_extras(type_def)
         + [
-            "#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]",
+            f"#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone{default})]",
             '#[serde(rename_all = "camelCase", deny_unknown_fields)]',
             f"pub struct {name}",
             "{",
@@ -642,12 +702,13 @@ def struct_wrapper(
     return lines
 
 
-def type_alias_wrapper(type_def: model.TypeAlias, inner: List[str]) -> List[str]:
+def type_alias_wrapper(type_def: model.TypeAlias, inner: List[str], defaultable: bool) -> List[str]:
+    default_str = ", Default" if defaultable else ""
     lines = (
         _get_doc(type_def.documentation)
         + generate_extras(type_def)
         + [
-            "#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]",
+            f"#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone{default_str})]",
             "#[serde(untagged)]",
             f"pub enum {type_def.name}",
             "{",
@@ -676,7 +737,7 @@ def generate_literal_struct_type(
     for prop_def in type_def.value.properties:
         inner += generate_property(prop_def, types, spec)
 
-    lines = struct_wrapper(type_def, inner)
+    lines = struct_wrapper(type_def, inner, types, spec)
     types.add_type_info(type_def, type_def.name, lines)
     return type_def.name
 
