@@ -687,11 +687,13 @@ def struct_wrapper(
         if defaultable:
             default = ", Default"
 
+    copy = ", Copy" if name in ["Position", "Range"] else ""
+
     lines = (
         _get_doc(type_def.documentation)
         + generate_extras(type_def)
         + [
-            f"#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone{default})]",
+            f"#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone{default}{copy})]",
             '#[serde(rename_all = "camelCase", deny_unknown_fields)]',
             f"pub struct {name}",
             "{",

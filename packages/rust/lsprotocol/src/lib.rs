@@ -5508,7 +5508,7 @@ pub struct LocationLink {
 ///     end : { line 6, character : 0 }
 /// }
 /// ```
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone, Default)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone, Default, Copy)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct Range {
     /// The range's end position.
@@ -5639,7 +5639,7 @@ pub struct DeclarationOptions {
 /// that denotes `\r|\n` or `\n|` where `|` represents the character offset.
 ///
 /// @since 3.17.0 - support for negotiated position encoding.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone, Default)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone, Default, Copy)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct Position {
     /// Character offset on a line in a document (zero-based).
