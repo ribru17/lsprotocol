@@ -32,13 +32,17 @@ def generate_serde(enum: model.Enum) -> List[str]:
         full_name = f"{enum.name}::{to_upper_camel_case(item.name)}"
         ser += [f"{full_name} => serializer.serialize_i32({item.value}),"]
         de += [f"{item.value} => Ok({full_name}),"]
+    if enum.supportsCustomValues:
+        full_name = f"{enum.name}::Custom(custom)"
+        ser += [f"{full_name} => serializer.serialize_i32(*custom),"]
+        de += [f"custom => Ok({full_name}),"]
     ser += [
         "}",  # match
         "}",  # fn
         "}",  # impl
     ]
     de += [
-        '_ => Err(serde::de::Error::custom("Unexpected value"))',
+        '_ => Err(serde::de::Error::custom("Unexpected value"))' if not enum.supportsCustomValues else "",
         "}",  # match
         "}",  # fn
         "}",  # impl
@@ -59,7 +63,7 @@ def generate_enum(enum: model.Enum, types: TypeData) -> None:
     for item in enum.values:
         if is_int:
             field = [
-                f"{to_upper_camel_case(item.name)} = {item.value},",
+                f"{to_upper_camel_case(item.name)},",
             ]
         else:
             field = [
@@ -70,6 +74,16 @@ def generate_enum(enum: model.Enum, types: TypeData) -> None:
         lines += indent_lines(
             _get_enum_docs(item) + generate_extras(item) + field + [""]
         )
+
+    if enum.supportsCustomValues:
+        lines += ["/// A custom value."]
+        if is_int:
+            lines += ["Custom(i32)"]
+        else:
+            lines += [
+                "#[serde(untagged)]",
+                "Custom(String)"
+            ]
 
     lines += ["}"]
 

@@ -11,26 +11,6 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::collections::HashMap;
 use url::Url;
-/// This type allows extending any string enum to support custom values.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(untagged)]
-pub enum CustomStringEnum<T> {
-    /// The value is one of the known enum values.
-    Known(T),
-    /// The value is custom.
-    Custom(String),
-}
-
-/// This type allows extending any integer enum to support custom values.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(untagged)]
-pub enum CustomIntEnum<T> {
-    /// The value is one of the known enum values.
-    Known(T),
-    /// The value is custom.
-    Custom(i32),
-}
-
 /// This allows a field to have two types.
 #[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
 #[serde(untagged)]
@@ -435,6 +415,10 @@ pub enum SemanticTokenTypes {
     /// @since 3.18.0
     #[serde(rename = "label")]
     Label,
+
+    /// A custom value.
+    #[serde(untagged)]
+    Custom(String),
 }
 
 /// A set of predefined token modifiers. This set is not fixed
@@ -473,6 +457,10 @@ pub enum SemanticTokenModifiers {
 
     #[serde(rename = "defaultLibrary")]
     DefaultLibrary,
+
+    /// A custom value.
+    #[serde(untagged)]
+    Custom(String),
 }
 
 /// The document diagnostic report kinds.
@@ -494,21 +482,24 @@ pub enum DocumentDiagnosticReportKind {
 /// Predefined error codes.
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum ErrorCodes {
-    ParseError = -32700,
+    ParseError,
 
-    InvalidRequest = -32600,
+    InvalidRequest,
 
-    MethodNotFound = -32601,
+    MethodNotFound,
 
-    InvalidParams = -32602,
+    InvalidParams,
 
-    InternalError = -32603,
+    InternalError,
 
     /// Error code indicating that a server received a notification or
     /// request before the server has received the `initialize` request.
-    ServerNotInitialized = -32002,
+    ServerNotInitialized,
 
-    UnknownErrorCode = -32001,
+    UnknownErrorCode,
+
+    /// A custom value.
+    Custom(i32),
 }
 impl Serialize for ErrorCodes {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -523,6 +514,7 @@ impl Serialize for ErrorCodes {
             ErrorCodes::InternalError => serializer.serialize_i32(-32603),
             ErrorCodes::ServerNotInitialized => serializer.serialize_i32(-32002),
             ErrorCodes::UnknownErrorCode => serializer.serialize_i32(-32001),
+            ErrorCodes::Custom(custom) => serializer.serialize_i32(*custom),
         }
     }
 }
@@ -540,7 +532,7 @@ impl<'de> Deserialize<'de> for ErrorCodes {
             -32603 => Ok(ErrorCodes::InternalError),
             -32002 => Ok(ErrorCodes::ServerNotInitialized),
             -32001 => Ok(ErrorCodes::UnknownErrorCode),
-            _ => Err(serde::de::Error::custom("Unexpected value")),
+            custom => Ok(ErrorCodes::Custom(custom)),
         }
     }
 }
@@ -553,14 +545,14 @@ pub enum LSPErrorCodes {
     /// the request failed.
     ///
     /// @since 3.17.0
-    RequestFailed = -32803,
+    RequestFailed,
 
     /// The server cancelled the request. This error code should
     /// only be used for requests that explicitly support being
     /// server cancellable.
     ///
     /// @since 3.17.0
-    ServerCancelled = -32802,
+    ServerCancelled,
 
     /// The server detected that the content of a document got
     /// modified outside normal conditions. A server should
@@ -570,11 +562,14 @@ pub enum LSPErrorCodes {
     ///
     /// If a client decides that a result is not of any use anymore
     /// the client should cancel the request.
-    ContentModified = -32801,
+    ContentModified,
 
     /// The client has canceled a request and a server has detected
     /// the cancel.
-    RequestCancelled = -32800,
+    RequestCancelled,
+
+    /// A custom value.
+    Custom(i32),
 }
 impl Serialize for LSPErrorCodes {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -586,6 +581,7 @@ impl Serialize for LSPErrorCodes {
             LSPErrorCodes::ServerCancelled => serializer.serialize_i32(-32802),
             LSPErrorCodes::ContentModified => serializer.serialize_i32(-32801),
             LSPErrorCodes::RequestCancelled => serializer.serialize_i32(-32800),
+            LSPErrorCodes::Custom(custom) => serializer.serialize_i32(*custom),
         }
     }
 }
@@ -600,7 +596,7 @@ impl<'de> Deserialize<'de> for LSPErrorCodes {
             -32802 => Ok(LSPErrorCodes::ServerCancelled),
             -32801 => Ok(LSPErrorCodes::ContentModified),
             -32800 => Ok(LSPErrorCodes::RequestCancelled),
-            _ => Err(serde::de::Error::custom("Unexpected value")),
+            custom => Ok(LSPErrorCodes::Custom(custom)),
         }
     }
 }
@@ -619,62 +615,66 @@ pub enum FoldingRangeKind {
     /// Folding range for a region (e.g. `#region`)
     #[serde(rename = "region")]
     Region,
+
+    /// A custom value.
+    #[serde(untagged)]
+    Custom(String),
 }
 
 /// A symbol kind.
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum SymbolKind {
-    File = 1,
+    File,
 
-    Module = 2,
+    Module,
 
-    Namespace = 3,
+    Namespace,
 
-    Package = 4,
+    Package,
 
-    Class = 5,
+    Class,
 
-    Method = 6,
+    Method,
 
-    Property = 7,
+    Property,
 
-    Field = 8,
+    Field,
 
-    Constructor = 9,
+    Constructor,
 
-    Enum = 10,
+    Enum,
 
-    Interface = 11,
+    Interface,
 
-    Function = 12,
+    Function,
 
-    Variable = 13,
+    Variable,
 
-    Constant = 14,
+    Constant,
 
-    String = 15,
+    String,
 
-    Number = 16,
+    Number,
 
-    Boolean = 17,
+    Boolean,
 
-    Array = 18,
+    Array,
 
-    Object = 19,
+    Object,
 
-    Key = 20,
+    Key,
 
-    Null = 21,
+    Null,
 
-    EnumMember = 22,
+    EnumMember,
 
-    Struct = 23,
+    Struct,
 
-    Event = 24,
+    Event,
 
-    Operator = 25,
+    Operator,
 
-    TypeParameter = 26,
+    TypeParameter,
 }
 impl Serialize for SymbolKind {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -755,7 +755,7 @@ impl<'de> Deserialize<'de> for SymbolKind {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum SymbolTag {
     /// Render a symbol as obsolete, usually using a strike-out.
-    Deprecated = 1,
+    Deprecated,
 }
 impl Serialize for SymbolTag {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -831,10 +831,10 @@ pub enum MonikerKind {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum InlayHintKind {
     /// An inlay hint that for a type annotation.
-    Type = 1,
+    Type,
 
     /// An inlay hint that is for a parameter.
-    Parameter = 2,
+    Parameter,
 }
 impl Serialize for InlayHintKind {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -865,22 +865,22 @@ impl<'de> Deserialize<'de> for InlayHintKind {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum MessageType {
     /// An error message.
-    Error = 1,
+    Error,
 
     /// A warning message.
-    Warning = 2,
+    Warning,
 
     /// An information message.
-    Info = 3,
+    Info,
 
     /// A log message.
-    Log = 4,
+    Log,
 
     /// A debug message.
     ///
     /// @since 3.18.0
     /// @proposed
-    Debug = 5,
+    Debug,
 }
 impl Serialize for MessageType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -918,16 +918,16 @@ impl<'de> Deserialize<'de> for MessageType {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum TextDocumentSyncKind {
     /// Documents should not be synced at all.
-    None = 0,
+    None,
 
     /// Documents are synced by always sending the full content
     /// of the document.
-    Full = 1,
+    Full,
 
     /// Documents are synced by sending the full content on open.
     /// After that only incremental updates to the document are
     /// send.
-    Incremental = 2,
+    Incremental,
 }
 impl Serialize for TextDocumentSyncKind {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -961,13 +961,13 @@ impl<'de> Deserialize<'de> for TextDocumentSyncKind {
 pub enum TextDocumentSaveReason {
     /// Manually triggered, e.g. by the user pressing save, by starting debugging,
     /// or by an API call.
-    Manual = 1,
+    Manual,
 
     /// Automatic after a delay.
-    AfterDelay = 2,
+    AfterDelay,
 
     /// When the editor lost focus.
-    FocusOut = 3,
+    FocusOut,
 }
 impl Serialize for TextDocumentSaveReason {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -999,55 +999,55 @@ impl<'de> Deserialize<'de> for TextDocumentSaveReason {
 /// The kind of a completion entry.
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum CompletionItemKind {
-    Text = 1,
+    Text,
 
-    Method = 2,
+    Method,
 
-    Function = 3,
+    Function,
 
-    Constructor = 4,
+    Constructor,
 
-    Field = 5,
+    Field,
 
-    Variable = 6,
+    Variable,
 
-    Class = 7,
+    Class,
 
-    Interface = 8,
+    Interface,
 
-    Module = 9,
+    Module,
 
-    Property = 10,
+    Property,
 
-    Unit = 11,
+    Unit,
 
-    Value = 12,
+    Value,
 
-    Enum = 13,
+    Enum,
 
-    Keyword = 14,
+    Keyword,
 
-    Snippet = 15,
+    Snippet,
 
-    Color = 16,
+    Color,
 
-    File = 17,
+    File,
 
-    Reference = 18,
+    Reference,
 
-    Folder = 19,
+    Folder,
 
-    EnumMember = 20,
+    EnumMember,
 
-    Constant = 21,
+    Constant,
 
-    Struct = 22,
+    Struct,
 
-    Event = 23,
+    Event,
 
-    Operator = 24,
+    Operator,
 
-    TypeParameter = 25,
+    TypeParameter,
 }
 impl Serialize for CompletionItemKind {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1127,7 +1127,7 @@ impl<'de> Deserialize<'de> for CompletionItemKind {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum CompletionItemTag {
     /// Render a completion as obsolete, usually using a strike-out.
-    Deprecated = 1,
+    Deprecated,
 }
 impl Serialize for CompletionItemTag {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1157,7 +1157,7 @@ impl<'de> Deserialize<'de> for CompletionItemTag {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum InsertTextFormat {
     /// The primary text to be inserted is treated as a plain string.
-    PlainText = 1,
+    PlainText,
 
     /// The primary text to be inserted is treated as a snippet.
     ///
@@ -1167,7 +1167,7 @@ pub enum InsertTextFormat {
     /// that is typing in one will update others too.
     ///
     /// See also: https://microsoft.github.io/language-server-protocol/specifications/specification-current/#snippet_syntax
-    Snippet = 2,
+    Snippet,
 }
 impl Serialize for InsertTextFormat {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1205,7 +1205,7 @@ pub enum InsertTextMode {
     /// inserted using the indentation defined in the string value.
     /// The client will not apply any kind of adjustments to the
     /// string.
-    AsIs = 1,
+    AsIs,
 
     /// The editor adjusts leading whitespace of new lines so that
     /// they match the indentation up to the cursor of the line for
@@ -1214,7 +1214,7 @@ pub enum InsertTextMode {
     /// Consider a line like this: <2tabs><cursor><3tabs>foo. Accepting a
     /// multi line completion item is indented using 2 tabs and all
     /// following lines inserted will be indented using 2 tabs as well.
-    AdjustIndentation = 2,
+    AdjustIndentation,
 }
 impl Serialize for InsertTextMode {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1245,13 +1245,13 @@ impl<'de> Deserialize<'de> for InsertTextMode {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum DocumentHighlightKind {
     /// A textual occurrence.
-    Text = 1,
+    Text,
 
     /// Read-access of a symbol, like reading a variable.
-    Read = 2,
+    Read,
 
     /// Write-access of a symbol, like writing to a variable.
-    Write = 3,
+    Write,
 }
 impl Serialize for DocumentHighlightKind {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1370,6 +1370,10 @@ pub enum CodeActionKind {
     /// @since 3.18.0
     #[serde(rename = "notebook")]
     Notebook,
+
+    /// A custom value.
+    #[serde(untagged)]
+    Custom(String),
 }
 
 /// Code action tags are extra annotations that tweak the behavior of a code action.
@@ -1378,7 +1382,7 @@ pub enum CodeActionKind {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum CodeActionTag {
     /// Marks the code action as LLM-generated.
-    Llmgenerated = 1,
+    Llmgenerated,
 }
 impl Serialize for CodeActionTag {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1626,6 +1630,10 @@ pub enum LanguageKind {
 
     #[serde(rename = "yaml")]
     Yaml,
+
+    /// A custom value.
+    #[serde(untagged)]
+    Custom(String),
 }
 
 /// Describes how an [inline completion provider][InlineCompletionItemProvider] was triggered.
@@ -1635,10 +1643,10 @@ pub enum LanguageKind {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum InlineCompletionTriggerKind {
     /// Completion was triggered explicitly by a user gesture.
-    Invoked = 1,
+    Invoked,
 
     /// Completion was triggered automatically while editing.
-    Automatic = 2,
+    Automatic,
 }
 impl Serialize for InlineCompletionTriggerKind {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1688,19 +1696,23 @@ pub enum PositionEncodingKind {
     /// encoding-agnostic representation of character offsets.
     #[serde(rename = "utf-32")]
     Utf32,
+
+    /// A custom value.
+    #[serde(untagged)]
+    Custom(String),
 }
 
 /// The file event type
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum FileChangeType {
     /// The file got created.
-    Created = 1,
+    Created,
 
     /// The file got changed.
-    Changed = 2,
+    Changed,
 
     /// The file got deleted.
-    Deleted = 3,
+    Deleted,
 }
 impl Serialize for FileChangeType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1732,13 +1744,16 @@ impl<'de> Deserialize<'de> for FileChangeType {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum WatchKind {
     /// Interested in create events.
-    Create = 1,
+    Create,
 
     /// Interested in change events
-    Change = 2,
+    Change,
 
     /// Interested in delete events
-    Delete = 4,
+    Delete,
+
+    /// A custom value.
+    Custom(i32),
 }
 impl Serialize for WatchKind {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1749,6 +1764,7 @@ impl Serialize for WatchKind {
             WatchKind::Create => serializer.serialize_i32(1),
             WatchKind::Change => serializer.serialize_i32(2),
             WatchKind::Delete => serializer.serialize_i32(4),
+            WatchKind::Custom(custom) => serializer.serialize_i32(*custom),
         }
     }
 }
@@ -1762,7 +1778,7 @@ impl<'de> Deserialize<'de> for WatchKind {
             1 => Ok(WatchKind::Create),
             2 => Ok(WatchKind::Change),
             4 => Ok(WatchKind::Delete),
-            _ => Err(serde::de::Error::custom("Unexpected value")),
+            custom => Ok(WatchKind::Custom(custom)),
         }
     }
 }
@@ -1771,16 +1787,16 @@ impl<'de> Deserialize<'de> for WatchKind {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum DiagnosticSeverity {
     /// Reports an error.
-    Error = 1,
+    Error,
 
     /// Reports a warning.
-    Warning = 2,
+    Warning,
 
     /// Reports an information.
-    Information = 3,
+    Information,
 
     /// Reports a hint.
-    Hint = 4,
+    Hint,
 }
 impl Serialize for DiagnosticSeverity {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1820,12 +1836,12 @@ pub enum DiagnosticTag {
     ///
     /// Clients are allowed to render diagnostics with this tag faded out instead of having
     /// an error squiggle.
-    Unnecessary = 1,
+    Unnecessary,
 
     /// Deprecated or obsolete code.
     ///
     /// Clients are allowed to rendered diagnostics with this tag strike through.
-    Deprecated = 2,
+    Deprecated,
 }
 impl Serialize for DiagnosticTag {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1857,14 +1873,14 @@ impl<'de> Deserialize<'de> for DiagnosticTag {
 pub enum CompletionTriggerKind {
     /// Completion was triggered by typing an identifier (24x7 code
     /// complete), manual invocation (e.g Ctrl+Space) or via API.
-    Invoked = 1,
+    Invoked,
 
     /// Completion was triggered by a trigger character specified by
     /// the `triggerCharacters` properties of the `CompletionRegistrationOptions`.
-    TriggerCharacter = 2,
+    TriggerCharacter,
 
     /// Completion was re-triggered as current completion list is incomplete
-    TriggerForIncompleteCompletions = 3,
+    TriggerForIncompleteCompletions,
 }
 impl Serialize for CompletionTriggerKind {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1901,13 +1917,13 @@ impl<'de> Deserialize<'de> for CompletionTriggerKind {
 pub enum ApplyKind {
     /// The value from the individual item (if provided and not `null`) will be
     /// used instead of the default.
-    Replace = 1,
+    Replace,
 
     /// The value from the item will be merged with the default.
     ///
     /// The specific rules for mergeing values are defined against each field
     /// that supports merging.
-    Merge = 2,
+    Merge,
 }
 impl Serialize for ApplyKind {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1940,13 +1956,13 @@ impl<'de> Deserialize<'de> for ApplyKind {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum SignatureHelpTriggerKind {
     /// Signature help was invoked manually by the user or by a command.
-    Invoked = 1,
+    Invoked,
 
     /// Signature help was triggered by a trigger character.
-    TriggerCharacter = 2,
+    TriggerCharacter,
 
     /// Signature help was triggered by the cursor moving or by the document content changing.
-    ContentChange = 3,
+    ContentChange,
 }
 impl Serialize for SignatureHelpTriggerKind {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -1981,13 +1997,13 @@ impl<'de> Deserialize<'de> for SignatureHelpTriggerKind {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum CodeActionTriggerKind {
     /// Code actions were explicitly requested by the user or by an extension.
-    Invoked = 1,
+    Invoked,
 
     /// Code actions were requested automatically.
     ///
     /// This typically happens when current selection in a file changes, but can
     /// also be triggered when file content changes.
-    Automatic = 2,
+    Automatic,
 }
 impl Serialize for CodeActionTriggerKind {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -2035,10 +2051,10 @@ pub enum FileOperationPatternKind {
 #[derive(PartialEq, Debug, Eq, Clone)]
 pub enum NotebookCellKind {
     /// A markup-cell is formatted source that is used for display.
-    Markup = 1,
+    Markup,
 
     /// A code-cell is source code.
-    Code = 2,
+    Code,
 }
 impl Serialize for NotebookCellKind {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -2108,7 +2124,7 @@ pub enum FailureHandlingKind {
 pub enum PrepareSupportDefaultBehavior {
     /// The client's default behavior is to select the identifier
     /// according the to language's syntax rule.
-    Identifier = 1,
+    Identifier,
 }
 impl Serialize for PrepareSupportDefaultBehavior {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -2591,7 +2607,7 @@ pub struct FoldingRange {
     /// is used to categorize folding ranges and used by commands like 'Fold all comments'.
     /// See [FoldingRangeKind] for an enumeration of standardized kinds.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub kind: Option<CustomStringEnum<FoldingRangeKind>>,
+    pub kind: Option<FoldingRangeKind>,
 
     /// The zero-based character offset from where the folded range starts. If not defined, defaults to the length of the start line.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4840,7 +4856,7 @@ pub struct CodeAction {
     ///
     /// Used to filter code actions.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub kind: Option<CustomStringEnum<CodeActionKind>>,
+    pub kind: Option<CodeActionKind>,
 
     /// Tags for this code action.
     ///
@@ -4861,7 +4877,7 @@ pub struct CodeActionRegistrationOptions {
     /// The list of kinds may be generic, such as `CodeActionKind.Refactor`, or the server
     /// may list out every specific kind they provide.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub code_action_kinds: Option<Vec<CustomStringEnum<CodeActionKind>>>,
+    pub code_action_kinds: Option<Vec<CodeActionKind>>,
 
     /// A document selector to identify the scope of the registration. If set to null
     /// the document selector provided on the client side will be used.
@@ -6206,7 +6222,7 @@ pub struct NotebookDocument {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TextDocumentItem {
     /// The text document's language identifier.
-    pub language_id: CustomStringEnum<LanguageKind>,
+    pub language_id: LanguageKind,
 
     /// The content of the opened text document.
     pub text: String,
@@ -6584,7 +6600,7 @@ pub struct ServerCapabilities {
     ///
     /// @since 3.17.0
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub position_encoding: Option<CustomStringEnum<PositionEncodingKind>>,
+    pub position_encoding: Option<PositionEncodingKind>,
 
     /// The server provides find references support.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6698,7 +6714,7 @@ pub struct FileSystemWatcher {
     /// to WatchKind.Create | WatchKind.Change | WatchKind.Delete
     /// which is 7.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub kind: Option<CustomIntEnum<WatchKind>>,
+    pub kind: Option<WatchKind>,
 }
 
 /// Represents a diagnostic, such as a compiler error or warning. Diagnostic objects
@@ -7136,7 +7152,7 @@ pub struct CodeActionContext {
     /// Actions not of this kind are filtered out by the client before being shown. So servers
     /// can omit computing them.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub only: Option<Vec<CustomStringEnum<CodeActionKind>>>,
+    pub only: Option<Vec<CodeActionKind>>,
 
     /// The reason why code actions were requested.
     ///
@@ -7166,7 +7182,7 @@ pub struct CodeActionOptions {
     /// The list of kinds may be generic, such as `CodeActionKind.Refactor`, or the server
     /// may list out every specific kind they provide.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub code_action_kinds: Option<Vec<CustomStringEnum<CodeActionKind>>>,
+    pub code_action_kinds: Option<Vec<CodeActionKind>>,
 
     /// Static documentation for a class of code actions.
     ///
@@ -7887,7 +7903,7 @@ pub struct CodeActionKindDocumentation {
     /// If the kind is generic, such as `CodeActionKind.Refactor`, the documentation will be shown whenever any
     /// refactorings are returned. If the kind if more specific, such as `CodeActionKind.RefactorExtract`, the
     /// documentation will only be shown when extract refactoring code actions are returned.
-    pub kind: CustomStringEnum<CodeActionKind>,
+    pub kind: CodeActionKind,
 }
 
 /// A notebook cell text document filter denotes a cell text
@@ -8308,7 +8324,7 @@ pub struct GeneralClientCapabilities {
     ///
     /// @since 3.17.0
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub position_encodings: Option<Vec<CustomStringEnum<PositionEncodingKind>>>,
+    pub position_encodings: Option<Vec<PositionEncodingKind>>,
 
     /// Client capabilities specific to regular expressions.
     ///
@@ -9786,7 +9802,7 @@ pub struct ClientFoldingRangeKindOptions {
     /// handle values outside its set gracefully and falls back
     /// to a default value when unknown.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub value_set: Option<Vec<CustomStringEnum<FoldingRangeKind>>>,
+    pub value_set: Option<Vec<FoldingRangeKind>>,
 }
 
 /// @since 3.18.0
@@ -9908,7 +9924,7 @@ pub struct ClientCodeActionKindOptions {
     /// property exists the client also guarantees that it will
     /// handle values outside its set gracefully and falls back
     /// to a default value when unknown.
-    pub value_set: Vec<CustomStringEnum<CodeActionKind>>,
+    pub value_set: Vec<CodeActionKind>,
 }
 
 /// @since 3.18.0
