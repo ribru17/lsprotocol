@@ -295,7 +295,7 @@ def required_rpc_properties(name: Optional[str] = None) -> List[model.Property]:
     props = [
         model.Property(
             name="jsonrpc",
-            type=model.BaseType(kind="base", name="string"),
+            type=model.ReferenceType(kind="reference", name="Version"),
             optional=False,
             documentation="The version of the JSON RPC protocol.",
         ),
@@ -374,6 +374,41 @@ def generate_required_request_types(
     )
     generate_type_alias(lsp_id_optional, types, spec)
 
+    types.add_type_info(
+        model.ReferenceType(kind="reference", name="Version"),
+        "Version",
+        [
+            "#[derive(Clone, Debug, PartialEq, Eq, Copy, Default)]",
+            "struct Version;",
+            "",
+            "impl<'de> Deserialize<'de> for Version {",
+                "fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>",
+                "where",
+                    "D: Deserializer<'de>,",
+                "{",
+                    "#[derive(Deserialize)]",
+            "struct Inner<'a>(#[serde(borrow)] std::borrow::Cow<'a, str>);",
+            "",
+                    "let Inner(ver) = Inner::deserialize(deserializer)?;",
+            "",
+                    "match ver.as_ref() {",
+                        '"2.0" => Ok(Version),',
+            r'_ => Err(serde::de::Error::custom("expected JSON-RPC version \"2.0\"")),',
+                    "}",
+                "}",
+            "}",
+            "",
+            "impl Serialize for Version {",
+                "fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>",
+                "where",
+                    "S: Serializer,",
+                "{",
+                    'serializer.serialize_str("2.0")',
+                "}",
+            "}",
+        ],
+    )
+
 
 def generate_requests(spec: model.LSPModel, types: TypeData) -> Dict[str, List[str]]:
     generate_required_request_types(spec, types)
@@ -428,7 +463,7 @@ def generate_request(
 def generate_response(
     request_def: model.Request, types: TypeData, spec: model.LSPModel
 ) -> None:
-    properties = required_rpc_properties("LSPRequestMethods")
+    properties = required_rpc_properties()
     properties += [
         model.Property(
             name="id",
@@ -437,6 +472,9 @@ def generate_response(
             documentation="The request id.",
         )
     ]
+    # TODO: Add `error` property here as well, as a flattened untagged enum
+    # which is combined with `result` (see the `tower-lsp` implementation of
+    # this)
     if request_def.result:
         if request_def.result.kind == "base" and request_def.result.name == "null":
             properties += [

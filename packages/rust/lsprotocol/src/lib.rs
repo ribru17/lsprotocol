@@ -9951,7 +9951,7 @@ pub struct ClientSemanticTokensRequestFullDelta {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidChangeWorkspaceFoldersNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -9965,7 +9965,7 @@ pub struct DidChangeWorkspaceFoldersNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WorkDoneProgressCancelNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -9981,7 +9981,7 @@ pub struct WorkDoneProgressCancelNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidCreateFilesNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -9997,7 +9997,7 @@ pub struct DidCreateFilesNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidRenameFilesNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10013,7 +10013,7 @@ pub struct DidRenameFilesNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidDeleteFilesNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10028,7 +10028,7 @@ pub struct DidDeleteFilesNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidOpenNotebookDocumentNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10040,7 +10040,7 @@ pub struct DidOpenNotebookDocumentNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidChangeNotebookDocumentNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10055,7 +10055,7 @@ pub struct DidChangeNotebookDocumentNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidSaveNotebookDocumentNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10070,7 +10070,7 @@ pub struct DidSaveNotebookDocumentNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidCloseNotebookDocumentNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10085,7 +10085,7 @@ pub struct DidCloseNotebookDocumentNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InitializedNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10100,7 +10100,7 @@ pub struct InitializedNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ExitNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10113,7 +10113,7 @@ pub struct ExitNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidChangeConfigurationNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10127,7 +10127,7 @@ pub struct DidChangeConfigurationNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ShowMessageNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10141,7 +10141,7 @@ pub struct ShowMessageNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct LogMessageNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10155,7 +10155,7 @@ pub struct LogMessageNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TelemetryEventNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10176,7 +10176,7 @@ pub struct TelemetryEventNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidOpenTextDocumentNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10190,7 +10190,7 @@ pub struct DidOpenTextDocumentNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidChangeTextDocumentNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10209,7 +10209,7 @@ pub struct DidChangeTextDocumentNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidCloseTextDocumentNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10223,7 +10223,7 @@ pub struct DidCloseTextDocumentNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidSaveTextDocumentNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10237,7 +10237,7 @@ pub struct DidSaveTextDocumentNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WillSaveTextDocumentNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10251,7 +10251,7 @@ pub struct WillSaveTextDocumentNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DidChangeWatchedFilesNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10265,7 +10265,7 @@ pub struct DidChangeWatchedFilesNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct PublishDiagnosticsNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10277,7 +10277,7 @@ pub struct PublishDiagnosticsNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SetTraceNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10289,7 +10289,7 @@ pub struct SetTraceNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct LogTraceNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10301,7 +10301,7 @@ pub struct LogTraceNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CancelNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10313,7 +10313,7 @@ pub struct CancelNotification {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ProgressNotification {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPNotificationMethods,
@@ -10339,6 +10339,37 @@ pub enum LSPIdOptional {
     None,
 }
 
+#[derive(Clone, Debug, PartialEq, Eq, Copy, Default)]
+struct Version;
+
+impl<'de> Deserialize<'de> for Version {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        struct Inner<'a>(#[serde(borrow)] std::borrow::Cow<'a, str>);
+
+        let Inner(ver) = Inner::deserialize(deserializer)?;
+
+        match ver.as_ref() {
+            "2.0" => Ok(Version),
+            _ => Err(serde::de::Error::custom(
+                "expected JSON-RPC version \"2.0\"",
+            )),
+        }
+    }
+}
+
+impl Serialize for Version {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str("2.0")
+    }
+}
+
 /// A request to resolve the implementation locations of a symbol at a given text
 /// document position. The request's parameter is of type [TextDocumentPositionParams]
 /// the response is of type [Definition] or a Thenable that resolves to such.
@@ -10346,7 +10377,7 @@ pub enum LSPIdOptional {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ImplementationRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10362,10 +10393,7 @@ pub struct ImplementationRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ImplementationResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10380,7 +10408,7 @@ pub struct ImplementationResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TypeDefinitionRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10396,10 +10424,7 @@ pub struct TypeDefinitionRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TypeDefinitionResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10412,7 +10437,7 @@ pub struct TypeDefinitionResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WorkspaceFoldersRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10426,10 +10451,7 @@ pub struct WorkspaceFoldersRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WorkspaceFoldersResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10448,7 +10470,7 @@ pub struct WorkspaceFoldersResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ConfigurationRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10464,10 +10486,7 @@ pub struct ConfigurationRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ConfigurationResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10483,7 +10502,7 @@ pub struct ConfigurationResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentColorRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10499,10 +10518,7 @@ pub struct DocumentColorRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentColorResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10518,7 +10534,7 @@ pub struct DocumentColorResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ColorPresentationRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10534,10 +10550,7 @@ pub struct ColorPresentationRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ColorPresentationResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10553,7 +10566,7 @@ pub struct ColorPresentationResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct FoldingRangeRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10569,10 +10582,7 @@ pub struct FoldingRangeRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct FoldingRangeResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10586,7 +10596,7 @@ pub struct FoldingRangeResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct FoldingRangeRefreshRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10600,10 +10610,7 @@ pub struct FoldingRangeRefreshRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct FoldingRangeRefreshResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10619,7 +10626,7 @@ pub struct FoldingRangeRefreshResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DeclarationRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10635,10 +10642,7 @@ pub struct DeclarationRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DeclarationResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10654,7 +10658,7 @@ pub struct DeclarationResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SelectionRangeRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10670,10 +10674,7 @@ pub struct SelectionRangeRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SelectionRangeResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10687,7 +10688,7 @@ pub struct SelectionRangeResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WorkDoneProgressCreateRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10703,10 +10704,7 @@ pub struct WorkDoneProgressCreateRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WorkDoneProgressCreateResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10722,7 +10720,7 @@ pub struct WorkDoneProgressCreateResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CallHierarchyPrepareRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10738,10 +10736,7 @@ pub struct CallHierarchyPrepareRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CallHierarchyPrepareResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10756,7 +10751,7 @@ pub struct CallHierarchyPrepareResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CallHierarchyIncomingCallsRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10772,10 +10767,7 @@ pub struct CallHierarchyIncomingCallsRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CallHierarchyIncomingCallsResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10790,7 +10782,7 @@ pub struct CallHierarchyIncomingCallsResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CallHierarchyOutgoingCallsRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10806,10 +10798,7 @@ pub struct CallHierarchyOutgoingCallsRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CallHierarchyOutgoingCallsResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10822,7 +10811,7 @@ pub struct CallHierarchyOutgoingCallsResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SemanticTokensRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10838,10 +10827,7 @@ pub struct SemanticTokensRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SemanticTokensResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10854,7 +10840,7 @@ pub struct SemanticTokensResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SemanticTokensDeltaRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10870,10 +10856,7 @@ pub struct SemanticTokensDeltaRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SemanticTokensDeltaResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10886,7 +10869,7 @@ pub struct SemanticTokensDeltaResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SemanticTokensRangeRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10902,10 +10885,7 @@ pub struct SemanticTokensRangeRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SemanticTokensRangeResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10918,7 +10898,7 @@ pub struct SemanticTokensRangeResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SemanticTokensRefreshRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10932,10 +10912,7 @@ pub struct SemanticTokensRefreshRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SemanticTokensRefreshResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10953,7 +10930,7 @@ pub struct SemanticTokensRefreshResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ShowDocumentRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -10969,10 +10946,7 @@ pub struct ShowDocumentRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ShowDocumentResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -10987,7 +10961,7 @@ pub struct ShowDocumentResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct LinkedEditingRangeRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11003,10 +10977,7 @@ pub struct LinkedEditingRangeRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct LinkedEditingRangeResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11026,7 +10997,7 @@ pub struct LinkedEditingRangeResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WillCreateFilesRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11042,10 +11013,7 @@ pub struct WillCreateFilesRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WillCreateFilesResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11061,7 +11029,7 @@ pub struct WillCreateFilesResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WillRenameFilesRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11077,10 +11045,7 @@ pub struct WillRenameFilesRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WillRenameFilesResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11096,7 +11061,7 @@ pub struct WillRenameFilesResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WillDeleteFilesRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11112,10 +11077,7 @@ pub struct WillDeleteFilesRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WillDeleteFilesResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11130,7 +11092,7 @@ pub struct WillDeleteFilesResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct MonikerRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11146,10 +11108,7 @@ pub struct MonikerRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct MonikerResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11165,7 +11124,7 @@ pub struct MonikerResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TypeHierarchyPrepareRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11181,10 +11140,7 @@ pub struct TypeHierarchyPrepareRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TypeHierarchyPrepareResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11199,7 +11155,7 @@ pub struct TypeHierarchyPrepareResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TypeHierarchySupertypesRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11215,10 +11171,7 @@ pub struct TypeHierarchySupertypesRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TypeHierarchySupertypesResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11233,7 +11186,7 @@ pub struct TypeHierarchySupertypesResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TypeHierarchySubtypesRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11249,10 +11202,7 @@ pub struct TypeHierarchySubtypesRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TypeHierarchySubtypesResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11269,7 +11219,7 @@ pub struct TypeHierarchySubtypesResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InlineValueRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11285,10 +11235,7 @@ pub struct InlineValueRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InlineValueResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11301,7 +11248,7 @@ pub struct InlineValueResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InlineValueRefreshRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11315,10 +11262,7 @@ pub struct InlineValueRefreshRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InlineValueRefreshResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11335,7 +11279,7 @@ pub struct InlineValueRefreshResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InlayHintRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11351,10 +11295,7 @@ pub struct InlayHintRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InlayHintResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11371,7 +11312,7 @@ pub struct InlayHintResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InlayHintResolveRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11387,10 +11328,7 @@ pub struct InlayHintResolveRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InlayHintResolveResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11403,7 +11341,7 @@ pub struct InlayHintResolveResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InlayHintRefreshRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11417,10 +11355,7 @@ pub struct InlayHintRefreshRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InlayHintRefreshResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11435,7 +11370,7 @@ pub struct InlayHintRefreshResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentDiagnosticRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11451,10 +11386,7 @@ pub struct DocumentDiagnosticRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentDiagnosticResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11469,7 +11401,7 @@ pub struct DocumentDiagnosticResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WorkspaceDiagnosticRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11485,10 +11417,7 @@ pub struct WorkspaceDiagnosticRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WorkspaceDiagnosticResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11503,7 +11432,7 @@ pub struct WorkspaceDiagnosticResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DiagnosticRefreshRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11517,10 +11446,7 @@ pub struct DiagnosticRefreshRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DiagnosticRefreshResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11538,7 +11464,7 @@ pub struct DiagnosticRefreshResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InlineCompletionRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11554,10 +11480,7 @@ pub struct InlineCompletionRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InlineCompletionResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11574,7 +11497,7 @@ pub struct InlineCompletionResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TextDocumentContentRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11590,10 +11513,7 @@ pub struct TextDocumentContentRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TextDocumentContentResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11610,7 +11530,7 @@ pub struct TextDocumentContentResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TextDocumentContentRefreshRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11626,10 +11546,7 @@ pub struct TextDocumentContentRefreshRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct TextDocumentContentRefreshResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11643,7 +11560,7 @@ pub struct TextDocumentContentRefreshResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct RegistrationRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11659,10 +11576,7 @@ pub struct RegistrationRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct RegistrationResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11676,7 +11590,7 @@ pub struct RegistrationResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct UnregistrationRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11692,10 +11606,7 @@ pub struct UnregistrationRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct UnregistrationResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11712,7 +11623,7 @@ pub struct UnregistrationResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InitializeRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11728,10 +11639,7 @@ pub struct InitializeRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct InitializeResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11747,7 +11655,7 @@ pub struct InitializeResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ShutdownRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11761,10 +11669,7 @@ pub struct ShutdownRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ShutdownResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11778,7 +11683,7 @@ pub struct ShutdownResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ShowMessageRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11794,10 +11699,7 @@ pub struct ShowMessageRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ShowMessageResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11815,7 +11717,7 @@ pub struct ShowMessageResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WillSaveTextDocumentWaitUntilRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11831,10 +11733,7 @@ pub struct WillSaveTextDocumentWaitUntilRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WillSaveTextDocumentWaitUntilResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11855,7 +11754,7 @@ pub struct WillSaveTextDocumentWaitUntilResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CompletionRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11871,10 +11770,7 @@ pub struct CompletionRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CompletionResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11889,7 +11785,7 @@ pub struct CompletionResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CompletionResolveRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11905,10 +11801,7 @@ pub struct CompletionResolveRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CompletionResolveResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11923,7 +11816,7 @@ pub struct CompletionResolveResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct HoverRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11939,10 +11832,7 @@ pub struct HoverRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct HoverResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11954,7 +11844,7 @@ pub struct HoverResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SignatureHelpRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -11970,10 +11860,7 @@ pub struct SignatureHelpRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SignatureHelpResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -11989,7 +11876,7 @@ pub struct SignatureHelpResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DefinitionRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12005,10 +11892,7 @@ pub struct DefinitionRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DefinitionResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12024,7 +11908,7 @@ pub struct DefinitionResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ReferencesRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12040,10 +11924,7 @@ pub struct ReferencesRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ReferencesResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12059,7 +11940,7 @@ pub struct ReferencesResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentHighlightRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12075,10 +11956,7 @@ pub struct DocumentHighlightRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentHighlightResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12094,7 +11972,7 @@ pub struct DocumentHighlightResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentSymbolRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12110,10 +11988,7 @@ pub struct DocumentSymbolRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentSymbolResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12126,7 +12001,7 @@ pub struct DocumentSymbolResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CodeActionRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12142,10 +12017,7 @@ pub struct CodeActionRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CodeActionResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12160,7 +12032,7 @@ pub struct CodeActionResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CodeActionResolveRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12176,10 +12048,7 @@ pub struct CodeActionResolveRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CodeActionResolveResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12199,7 +12068,7 @@ pub struct CodeActionResolveResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WorkspaceSymbolRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12215,10 +12084,7 @@ pub struct WorkspaceSymbolRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WorkspaceSymbolResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12234,7 +12100,7 @@ pub struct WorkspaceSymbolResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WorkspaceSymbolResolveRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12250,10 +12116,7 @@ pub struct WorkspaceSymbolResolveRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct WorkspaceSymbolResolveResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12266,7 +12129,7 @@ pub struct WorkspaceSymbolResolveResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CodeLensRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12282,10 +12145,7 @@ pub struct CodeLensRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CodeLensResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12298,7 +12158,7 @@ pub struct CodeLensResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CodeLensResolveRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12314,10 +12174,7 @@ pub struct CodeLensResolveRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CodeLensResolveResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12332,7 +12189,7 @@ pub struct CodeLensResolveResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CodeLensRefreshRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12346,10 +12203,7 @@ pub struct CodeLensRefreshRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CodeLensRefreshResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12362,7 +12216,7 @@ pub struct CodeLensRefreshResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentLinkRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12378,10 +12232,7 @@ pub struct DocumentLinkRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentLinkResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12396,7 +12247,7 @@ pub struct DocumentLinkResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentLinkResolveRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12412,10 +12263,7 @@ pub struct DocumentLinkResolveRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentLinkResolveResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12428,7 +12276,7 @@ pub struct DocumentLinkResolveResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentFormattingRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12444,10 +12292,7 @@ pub struct DocumentFormattingRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentFormattingResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12460,7 +12305,7 @@ pub struct DocumentFormattingResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentRangeFormattingRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12476,10 +12321,7 @@ pub struct DocumentRangeFormattingRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentRangeFormattingResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12495,7 +12337,7 @@ pub struct DocumentRangeFormattingResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentRangesFormattingRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12511,10 +12353,7 @@ pub struct DocumentRangesFormattingRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentRangesFormattingResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12527,7 +12366,7 @@ pub struct DocumentRangesFormattingResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentOnTypeFormattingRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12543,10 +12382,7 @@ pub struct DocumentOnTypeFormattingRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DocumentOnTypeFormattingResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12559,7 +12395,7 @@ pub struct DocumentOnTypeFormattingResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct RenameRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12575,10 +12411,7 @@ pub struct RenameRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct RenameResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12593,7 +12426,7 @@ pub struct RenameResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct PrepareRenameRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12609,10 +12442,7 @@ pub struct PrepareRenameRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct PrepareRenameResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12626,7 +12456,7 @@ pub struct PrepareRenameResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ExecuteCommandRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12642,10 +12472,7 @@ pub struct ExecuteCommandRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ExecuteCommandResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
@@ -12658,7 +12485,7 @@ pub struct ExecuteCommandResponse {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ApplyWorkspaceEditRequest {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
+    pub jsonrpc: Version,
 
     /// The method to be invoked.
     pub method: LSPRequestMethods,
@@ -12674,10 +12501,7 @@ pub struct ApplyWorkspaceEditRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ApplyWorkspaceEditResponse {
     /// The version of the JSON RPC protocol.
-    pub jsonrpc: String,
-
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
+    pub jsonrpc: Version,
 
     /// The request id.
     pub id: LSPIdOptional,
