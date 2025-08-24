@@ -409,6 +409,33 @@ def generate_required_request_types(
         ],
     )
 
+    types.add_type_info(
+        model.ReferenceType(kind="reference", name="Payload"),
+        "Payload",
+        [
+            "#[derive(Clone, PartialEq, Eq, Deserialize, Serialize)]",
+            "#[serde(untagged)]",
+            "pub enum Payload<T> {",
+            "    Ok { result: T },",
+            "    Err { error: ResponseError },",
+            "}",
+        ],
+    )
+
+    types.add_type_info(
+        model.ReferenceType(kind="reference", name="ResponseError"),
+        "ResponseError",
+        [
+            "#[derive(Clone, PartialEq, Eq, Deserialize, Serialize, Default)]",
+            "pub struct ResponseError {",
+            "    code: OR2<ErrorCodes, LspErrorCodes>,",
+            "    message: String,",
+            '    #[serde(skip_serializing_if = "Option::is_none")]',
+            "    data: Option<LSPAny>,",
+            "}",
+        ],
+    )
+
 
 def generate_requests(spec: model.LSPModel, types: TypeData) -> Dict[str, List[str]]:
     generate_required_request_types(spec, types)
@@ -472,28 +499,21 @@ def generate_response(
             documentation="The request id.",
         )
     ]
-    # TODO: Add `error` property here as well, as a flattened untagged enum
-    # which is combined with `result` (see the `tower-lsp` implementation of
-    # this)
-    if request_def.result:
-        if request_def.result.kind == "base" and request_def.result.name == "null":
-            properties += [
-                model.Property(
-                    name="result",
-                    type=model.ReferenceType(kind="reference", name="LSPNull"),
-                )
-            ]
-        else:
-            properties += [
-                model.Property(
-                    name="result",
-                    type=request_def.result,
-                )
-            ]
+    assert request_def.result
+
     name = get_name(request_def)
 
     if name.endswith("Request"):
         name = name[:-7]
+
+    properties += [
+        model.Property(
+            name="payload",
+            type=request_def.result,
+            payload=True,
+        )
+    ]
+
     response_def = model.Structure(
         name=f"{name}Response",
         documentation=f"Response to the [{name}Request].",

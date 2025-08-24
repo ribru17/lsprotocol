@@ -10370,6 +10370,21 @@ impl Serialize for Version {
     }
 }
 
+#[derive(Clone, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum Payload<T> {
+    Ok { result: T },
+    Err { error: ResponseError },
+}
+
+#[derive(Clone, PartialEq, Eq, Deserialize, Serialize, Default)]
+pub struct ResponseError {
+    code: OR2<ErrorCodes, LspErrorCodes>,
+    message: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    data: Option<LSPAny>,
+}
+
 /// A request to resolve the implementation locations of a symbol at a given text
 /// document position. The request's parameter is of type [TextDocumentPositionParams]
 /// the response is of type [Definition] or a Thenable that resolves to such.
@@ -10398,7 +10413,8 @@ pub struct ImplementationResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<OR2<Definition, Vec<DefinitionLink>>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<OR2<Definition, Vec<DefinitionLink>>>>,
 }
 
 /// A request to resolve the type definition locations of a symbol at a given text
@@ -10429,7 +10445,8 @@ pub struct TypeDefinitionResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<OR2<Definition, Vec<DefinitionLink>>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<OR2<Definition, Vec<DefinitionLink>>>>,
 }
 
 /// The `workspace/workspaceFolders` is sent from the server to the client to fetch the open workspace folders.
@@ -10456,7 +10473,8 @@ pub struct WorkspaceFoldersResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<WorkspaceFolder>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<WorkspaceFolder>>>,
 }
 
 /// The 'workspace/configuration' request is sent from the server to the client to fetch a certain
@@ -10491,7 +10509,8 @@ pub struct ConfigurationResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Vec<LSPAny>,
+    #[serde(flatten)]
+    pub payload: Payload<Vec<LSPAny>>,
 }
 
 /// A request to list all color symbols found in a given text document. The request's
@@ -10523,7 +10542,8 @@ pub struct DocumentColorResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Vec<ColorInformation>,
+    #[serde(flatten)]
+    pub payload: Payload<Vec<ColorInformation>>,
 }
 
 /// A request to list all presentation for a color. The request's
@@ -10555,7 +10575,8 @@ pub struct ColorPresentationResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Vec<ColorPresentation>,
+    #[serde(flatten)]
+    pub payload: Payload<Vec<ColorPresentation>>,
 }
 
 /// A request to provide folding ranges in a document. The request's
@@ -10587,7 +10608,8 @@ pub struct FoldingRangeResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<FoldingRange>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<FoldingRange>>>,
 }
 
 /// @since 3.18.0
@@ -10615,7 +10637,8 @@ pub struct FoldingRangeRefreshResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: LSPNull,
+    #[serde(flatten)]
+    pub payload: Payload<LSPNull>,
 }
 
 /// A request to resolve the type definition locations of a symbol at a given text
@@ -10647,7 +10670,8 @@ pub struct DeclarationResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<OR2<Declaration, Vec<DeclarationLink>>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<OR2<Declaration, Vec<DeclarationLink>>>>,
 }
 
 /// A request to provide selection ranges in a document. The request's
@@ -10679,7 +10703,8 @@ pub struct SelectionRangeResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<SelectionRange>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<SelectionRange>>>,
 }
 
 /// The `window/workDoneProgress/create` request is sent from the server to the client to initiate progress
@@ -10709,7 +10734,8 @@ pub struct WorkDoneProgressCreateResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: LSPNull,
+    #[serde(flatten)]
+    pub payload: Payload<LSPNull>,
 }
 
 /// A request to result a `CallHierarchyItem` in a document at a given position.
@@ -10741,7 +10767,8 @@ pub struct CallHierarchyPrepareResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<CallHierarchyItem>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<CallHierarchyItem>>>,
 }
 
 /// A request to resolve the incoming calls for a given `CallHierarchyItem`.
@@ -10772,7 +10799,8 @@ pub struct CallHierarchyIncomingCallsResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<CallHierarchyIncomingCall>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<CallHierarchyIncomingCall>>>,
 }
 
 /// A request to resolve the outgoing calls for a given `CallHierarchyItem`.
@@ -10803,7 +10831,8 @@ pub struct CallHierarchyOutgoingCallsResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<CallHierarchyOutgoingCall>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<CallHierarchyOutgoingCall>>>,
 }
 
 /// @since 3.16.0
@@ -10832,7 +10861,8 @@ pub struct SemanticTokensResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<SemanticTokens>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<SemanticTokens>>,
 }
 
 /// @since 3.16.0
@@ -10861,7 +10891,8 @@ pub struct SemanticTokensDeltaResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<OR2<SemanticTokens, SemanticTokensDelta>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<OR2<SemanticTokens, SemanticTokensDelta>>>,
 }
 
 /// @since 3.16.0
@@ -10890,7 +10921,8 @@ pub struct SemanticTokensRangeResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<SemanticTokens>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<SemanticTokens>>,
 }
 
 /// @since 3.16.0
@@ -10917,7 +10949,8 @@ pub struct SemanticTokensRefreshResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: LSPNull,
+    #[serde(flatten)]
+    pub payload: Payload<LSPNull>,
 }
 
 /// A request to show a document. This request might open an
@@ -10951,7 +10984,8 @@ pub struct ShowDocumentResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: ShowDocumentResult,
+    #[serde(flatten)]
+    pub payload: Payload<ShowDocumentResult>,
 }
 
 /// A request to provide ranges that can be edited together.
@@ -10982,7 +11016,8 @@ pub struct LinkedEditingRangeResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<LinkedEditingRanges>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<LinkedEditingRanges>>,
 }
 
 /// The will create files request is sent from the client to the server before files are actually
@@ -11018,7 +11053,8 @@ pub struct WillCreateFilesResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<WorkspaceEdit>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<WorkspaceEdit>>,
 }
 
 /// The will rename files request is sent from the client to the server before files are actually
@@ -11050,7 +11086,8 @@ pub struct WillRenameFilesResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<WorkspaceEdit>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<WorkspaceEdit>>,
 }
 
 /// The did delete files notification is sent from the client to the server when
@@ -11082,7 +11119,8 @@ pub struct WillDeleteFilesResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<WorkspaceEdit>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<WorkspaceEdit>>,
 }
 
 /// A request to get the moniker of a symbol at a given text document position.
@@ -11113,7 +11151,8 @@ pub struct MonikerResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<Moniker>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<Moniker>>>,
 }
 
 /// A request to result a `TypeHierarchyItem` in a document at a given position.
@@ -11145,7 +11184,8 @@ pub struct TypeHierarchyPrepareResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<TypeHierarchyItem>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<TypeHierarchyItem>>>,
 }
 
 /// A request to resolve the supertypes for a given `TypeHierarchyItem`.
@@ -11176,7 +11216,8 @@ pub struct TypeHierarchySupertypesResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<TypeHierarchyItem>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<TypeHierarchyItem>>>,
 }
 
 /// A request to resolve the subtypes for a given `TypeHierarchyItem`.
@@ -11207,7 +11248,8 @@ pub struct TypeHierarchySubtypesResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<TypeHierarchyItem>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<TypeHierarchyItem>>>,
 }
 
 /// A request to provide inline values in a document. The request's parameter is of
@@ -11240,7 +11282,8 @@ pub struct InlineValueResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<InlineValue>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<InlineValue>>>,
 }
 
 /// @since 3.17.0
@@ -11267,7 +11310,8 @@ pub struct InlineValueRefreshResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: LSPNull,
+    #[serde(flatten)]
+    pub payload: Payload<LSPNull>,
 }
 
 /// A request to provide inlay hints in a document. The request's parameter is of
@@ -11300,7 +11344,8 @@ pub struct InlayHintResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<InlayHint>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<InlayHint>>>,
 }
 
 /// A request to resolve additional properties for an inlay hint.
@@ -11333,7 +11378,8 @@ pub struct InlayHintResolveResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: InlayHint,
+    #[serde(flatten)]
+    pub payload: Payload<InlayHint>,
 }
 
 /// @since 3.17.0
@@ -11360,7 +11406,8 @@ pub struct InlayHintRefreshResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: LSPNull,
+    #[serde(flatten)]
+    pub payload: Payload<LSPNull>,
 }
 
 /// The document diagnostic request definition.
@@ -11391,7 +11438,8 @@ pub struct DocumentDiagnosticResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: DocumentDiagnosticReport,
+    #[serde(flatten)]
+    pub payload: Payload<DocumentDiagnosticReport>,
 }
 
 /// The workspace diagnostic request definition.
@@ -11422,7 +11470,8 @@ pub struct WorkspaceDiagnosticResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: WorkspaceDiagnosticReport,
+    #[serde(flatten)]
+    pub payload: Payload<WorkspaceDiagnosticReport>,
 }
 
 /// The diagnostic refresh request definition.
@@ -11451,7 +11500,8 @@ pub struct DiagnosticRefreshResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: LSPNull,
+    #[serde(flatten)]
+    pub payload: Payload<LSPNull>,
 }
 
 /// A request to provide inline completions in a document. The request's parameter is of
@@ -11485,7 +11535,8 @@ pub struct InlineCompletionResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<OR2<InlineCompletionList, Vec<InlineCompletionItem>>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<OR2<InlineCompletionList, Vec<InlineCompletionItem>>>>,
 }
 
 /// The `workspace/textDocumentContent` request is sent from the client to the
@@ -11518,7 +11569,8 @@ pub struct TextDocumentContentResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: TextDocumentContentResult,
+    #[serde(flatten)]
+    pub payload: Payload<TextDocumentContentResult>,
 }
 
 /// The `workspace/textDocumentContent` request is sent from the server to the client to refresh
@@ -11551,7 +11603,8 @@ pub struct TextDocumentContentRefreshResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: LSPNull,
+    #[serde(flatten)]
+    pub payload: Payload<LSPNull>,
 }
 
 /// The `client/registerCapability` request is sent from the server to the client to register a new capability
@@ -11581,7 +11634,8 @@ pub struct RegistrationResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: LSPNull,
+    #[serde(flatten)]
+    pub payload: Payload<LSPNull>,
 }
 
 /// The `client/unregisterCapability` request is sent from the server to the client to unregister a previously registered capability
@@ -11611,7 +11665,8 @@ pub struct UnregistrationResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: LSPNull,
+    #[serde(flatten)]
+    pub payload: Payload<LSPNull>,
 }
 
 /// The initialize request is sent from the client to the server.
@@ -11644,7 +11699,8 @@ pub struct InitializeResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: InitializeResult,
+    #[serde(flatten)]
+    pub payload: Payload<InitializeResult>,
 }
 
 /// A shutdown request is sent from the client to the server.
@@ -11674,7 +11730,8 @@ pub struct ShutdownResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: LSPNull,
+    #[serde(flatten)]
+    pub payload: Payload<LSPNull>,
 }
 
 /// The show message request is sent from the server to the client to show a message
@@ -11704,7 +11761,8 @@ pub struct ShowMessageResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<MessageActionItem>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<MessageActionItem>>,
 }
 
 /// A document will save request is sent from the client to the server before
@@ -11738,7 +11796,8 @@ pub struct WillSaveTextDocumentWaitUntilResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<TextEdit>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<TextEdit>>>,
 }
 
 /// Request to request completion at a given text document position. The request's
@@ -11775,7 +11834,8 @@ pub struct CompletionResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<OR2<Vec<CompletionItem>, CompletionList>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<OR2<Vec<CompletionItem>, CompletionList>>>,
 }
 
 /// Request to resolve additional information for a given completion item.The request's
@@ -11806,7 +11866,8 @@ pub struct CompletionResolveResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: CompletionItem,
+    #[serde(flatten)]
+    pub payload: Payload<CompletionItem>,
 }
 
 /// Request to request hover information at a given text document position. The request's
@@ -11837,7 +11898,8 @@ pub struct HoverResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Hover>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Hover>>,
 }
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
@@ -11865,7 +11927,8 @@ pub struct SignatureHelpResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<SignatureHelp>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<SignatureHelp>>,
 }
 
 /// A request to resolve the definition location of a symbol at a given text
@@ -11897,7 +11960,8 @@ pub struct DefinitionResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<OR2<Definition, Vec<DefinitionLink>>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<OR2<Definition, Vec<DefinitionLink>>>>,
 }
 
 /// A request to resolve project-wide references for the symbol denoted
@@ -11929,7 +11993,8 @@ pub struct ReferencesResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<Location>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<Location>>>,
 }
 
 /// Request to resolve a [DocumentHighlight] for a given
@@ -11961,7 +12026,8 @@ pub struct DocumentHighlightResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<DocumentHighlight>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<DocumentHighlight>>>,
 }
 
 /// A request to list all symbols found in a given text document. The request's
@@ -11993,7 +12059,8 @@ pub struct DocumentSymbolResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<OR2<Vec<SymbolInformation>, Vec<DocumentSymbol>>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<OR2<Vec<SymbolInformation>, Vec<DocumentSymbol>>>>,
 }
 
 /// A request to provide commands for the given text document and range.
@@ -12022,7 +12089,8 @@ pub struct CodeActionResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<OR2<Command, CodeAction>>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<OR2<Command, CodeAction>>>>,
 }
 
 /// Request to resolve additional information for a given code action.The request's
@@ -12053,7 +12121,8 @@ pub struct CodeActionResolveResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: CodeAction,
+    #[serde(flatten)]
+    pub payload: Payload<CodeAction>,
 }
 
 /// A request to list project-wide symbols matching the query string given
@@ -12089,7 +12158,8 @@ pub struct WorkspaceSymbolResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<OR2<Vec<SymbolInformation>, Vec<WorkspaceSymbol>>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<OR2<Vec<SymbolInformation>, Vec<WorkspaceSymbol>>>>,
 }
 
 /// A request to resolve the range inside the workspace
@@ -12121,7 +12191,8 @@ pub struct WorkspaceSymbolResolveResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: WorkspaceSymbol,
+    #[serde(flatten)]
+    pub payload: Payload<WorkspaceSymbol>,
 }
 
 /// A request to provide code lens for the given text document.
@@ -12150,7 +12221,8 @@ pub struct CodeLensResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<CodeLens>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<CodeLens>>>,
 }
 
 /// A request to resolve a command for a given code lens.
@@ -12179,7 +12251,8 @@ pub struct CodeLensResolveResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: CodeLens,
+    #[serde(flatten)]
+    pub payload: Payload<CodeLens>,
 }
 
 /// A request to refresh all code actions
@@ -12208,7 +12281,8 @@ pub struct CodeLensRefreshResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: LSPNull,
+    #[serde(flatten)]
+    pub payload: Payload<LSPNull>,
 }
 
 /// A request to provide document links
@@ -12237,7 +12311,8 @@ pub struct DocumentLinkResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<DocumentLink>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<DocumentLink>>>,
 }
 
 /// Request to resolve additional information for a given document link. The request's
@@ -12268,7 +12343,8 @@ pub struct DocumentLinkResolveResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: DocumentLink,
+    #[serde(flatten)]
+    pub payload: Payload<DocumentLink>,
 }
 
 /// A request to format a whole document.
@@ -12297,7 +12373,8 @@ pub struct DocumentFormattingResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<TextEdit>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<TextEdit>>>,
 }
 
 /// A request to format a range in a document.
@@ -12326,7 +12403,8 @@ pub struct DocumentRangeFormattingResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<TextEdit>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<TextEdit>>>,
 }
 
 /// A request to format ranges in a document.
@@ -12358,7 +12436,8 @@ pub struct DocumentRangesFormattingResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<TextEdit>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<TextEdit>>>,
 }
 
 /// A request to format a document on type.
@@ -12387,7 +12466,8 @@ pub struct DocumentOnTypeFormattingResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<Vec<TextEdit>>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<Vec<TextEdit>>>,
 }
 
 /// A request to rename a symbol.
@@ -12416,7 +12496,8 @@ pub struct RenameResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<WorkspaceEdit>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<WorkspaceEdit>>,
 }
 
 /// A request to test and perform the setup necessary for a rename.
@@ -12447,7 +12528,8 @@ pub struct PrepareRenameResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<PrepareRenameResult>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<PrepareRenameResult>>,
 }
 
 /// A request send from the client to the server to execute a command. The request might return
@@ -12477,7 +12559,8 @@ pub struct ExecuteCommandResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: Option<LSPAny>,
+    #[serde(flatten)]
+    pub payload: Payload<Option<LSPAny>>,
 }
 
 /// A request sent from the server to the client to modified certain resources.
@@ -12506,5 +12589,6 @@ pub struct ApplyWorkspaceEditResponse {
     /// The request id.
     pub id: LSPIdOptional,
 
-    pub result: ApplyWorkspaceEditResult,
+    #[serde(flatten)]
+    pub payload: Payload<ApplyWorkspaceEditResult>,
 }

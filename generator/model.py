@@ -511,6 +511,10 @@ class Property:
         validator=attrs.validators.optional(attrs.validators.instance_of(str)),
         default=None,
     )
+    payload: Optional[bool] = attrs.field(
+        validator=attrs.validators.optional(attrs.validators.instance_of(bool)),
+        default=None,
+    )
     id_: Optional[str] = attrs.field(
         converter=lambda x: str(uuid.uuid4()),
         validator=attrs.validators.optional(attrs.validators.instance_of(str)),
