@@ -292,6 +292,34 @@ def generate_notifications(
             "    type Params: DeserializeOwned + Serialize + Send + Sync;",
             "    const METHOD: LSPNotificationMethods;",
             "}",
+            "",
+            "/// A JSON-RPC notification message.",
+            "#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]",
+            "pub struct NotificationMessage {",
+            "    /// The version of the JSON-RPC protocol.",
+            "    jsonrpc: Version,",
+            "    /// The method to be invoked.",
+            "    method: LSPNotificationMethods,",
+            "    /// The method's params.",
+            '    #[serde(skip_serializing_if = "Option::is_none")]',
+            "    params: Option<LSPAny>,",
+            "}",
+            "",
+            "impl NotificationMessage {",
+            "    /// Constructs a JSON-RPC notification message object from its corresponding LSP type.",
+            "    pub fn from_notification<R: Notification>(params: R::Params) -> Self",
+            "    {",
+            "        // This must always be either an Array or an Object. This will be guaranteed by the LSP,",
+            "        // as to conform to the JSON-RPC spec.",
+            '        let params = serde_json::to_value(params).expect("Notification parameters should be serializable.");',
+            "",
+            "        Self {",
+            "            jsonrpc: Version,",
+            "            method: R::METHOD,",
+            "            params: Some(params),",
+            "        }",
+            "    }",
+            "}",
         ]
     )
     for notification in spec.notifications:
@@ -413,11 +441,42 @@ def generate_required_request_types(
         [
             "#[derive(Clone, PartialEq, Eq, Deserialize, Serialize, Debug)]",
             "#[serde(untagged)]",
-            "pub enum Payload<T> {",
-            "    Ok { result: T },",
+            "enum Payload {",
+            "    Ok { result: LSPAny },",
             "    Err { error: ResponseError },",
             "}",
         ],
+    )
+
+    types.add_type_info(
+        model.ReferenceType(kind="reference", name="ResponseMessage"), "ResponseMessage", [
+            "/// A JSON-RPC response message.",
+            "#[derive(Clone, PartialEq, Deserialize, Serialize)]",
+            "pub struct ResponseMessage {",
+            "    jsonrpc: Version,",
+            "    id: LSPIdOptional,",
+            "    #[serde(flatten)]",
+            "    payload: Payload,",
+            "}",
+            "",
+            "impl ResponseMessage {",
+            "    pub fn from_ok(id: LSPIdOptional, result: LSPAny) -> Self {",
+            "        Self {",
+            "            jsonrpc: Version,",
+            "            id,",
+            "            payload: Payload::Ok { result },",
+            "        }",
+            "    }",
+            "",
+            "    pub fn from_error(id: LSPIdOptional, error: ResponseError) -> Self {",
+            "        Self {",
+            "            jsonrpc: Version,",
+            "            id,",
+            "            payload: Payload::Err { error },",
+            "        }",
+            "    }"
+            "}",
+        ]
     )
 
     types.add_type_info(
@@ -443,13 +502,43 @@ def generate_requests(spec: model.LSPModel, types: TypeData) -> Dict[str, List[s
             "    type Result: DeserializeOwned + Serialize + Send + Sync;",
             "    const METHOD: LSPRequestMethods;",
             "}",
+            "",
+            "/// A JSON-RPC request message.",
+            "#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]",
+            "pub struct RequestMessage {",
+            "    /// The version of the JSON-RPC protocol.",
+            "    jsonrpc: Version,",
+            "    /// The request id.",
+            "    id: LSPId,",
+            "    /// The method to be invoked.",
+            "    method: LSPRequestMethods,",
+            "    /// The method's params.",
+            '    #[serde(skip_serializing_if = "Option::is_none")]',
+            "    params: Option<LSPAny>,",
+            "}",
+            "",
+            "impl RequestMessage {",
+            "    /// Constructs a JSON-RPC request message object from its corresponding LSP type.",
+            "    pub fn from_request<R: Request>(id: LSPId, params: R::Params) -> Self",
+            "    {",
+            "        // This must always be either an Array or an Object. This will be guaranteed by the LSP,",
+            "        // as to conform to the JSON-RPC spec.",
+            '        let params = serde_json::to_value(params).expect("Request parameters should be serializable.");',
+            "",
+            "        Self {",
+            "            jsonrpc: Version,",
+            "            id,",
+            "            method: R::METHOD,",
+            "            params: Some(params),",
+            "        }",
+            "    }",
+            "}",
         ]
     )
     generate_required_request_types(spec, types)
     for request in spec.requests:
         if not types.has_id(request):
             generate_request(request, types, spec)
-            generate_response(request, types, spec)
             generate_partial_result(request, types, spec)
             generate_registration_options(request, types, spec)
     return types
@@ -474,49 +563,6 @@ def generate_request(
         "}",
     ]
     types.add_type_info(request_def, get_message_type_name(request_def), lines)
-
-
-def generate_response(
-    request_def: model.Request, types: TypeData, spec: model.LSPModel
-) -> None:
-    properties = required_rpc_properties()
-    properties += [
-        model.Property(
-            name="id",
-            type=model.ReferenceType(kind="reference", name="LSPIdOptional"),
-            optional=False,
-            documentation="The request id.",
-        )
-    ]
-    assert request_def.result
-
-    name = get_name(request_def)
-
-    if name.endswith("Request"):
-        name = name[:-7]
-
-    properties += [
-        model.Property(
-            name="payload",
-            type=request_def.result,
-            payload=True,
-        )
-    ]
-
-    response_def = model.Structure(
-        name=f"{name}Response",
-        documentation=f"Response to the [{name}Request].",
-        properties=properties,
-        since=request_def.since,
-        deprecated=request_def.deprecated,
-    )
-
-    inner = []
-    for prop_def in properties:
-        inner += generate_property(prop_def, types, spec)
-
-    lines = struct_wrapper(response_def, inner, types, spec)
-    types.add_type_info(response_def, response_def.name, lines)
 
 
 def generate_partial_result(

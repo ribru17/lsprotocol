@@ -594,19 +594,10 @@ def generate_property(
         else:
             optional = [f'#[serde(rename = "{prop_def.name}")]']
 
-    flatten = (
-        ['#[serde(flatten)]']
-        if prop_def.payload else []
-    )
-
-    if prop_def.payload:
-        prop_type = f"Payload<{prop_type}>"
-
     return (
         _get_doc(prop_def.documentation)
         + generate_extras(prop_def)
         + optional
-        + flatten
         + [f"pub {prop_name}: {prop_type},"]
         + [""]
     )
