@@ -8,7 +8,7 @@
 // 3. Run command: `python -m nox --session build_lsp`
 
 use rust_decimal::Decimal;
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{de::DeserializeOwned, Deserialize, Deserializer, Serialize, Serializer};
 use std::collections::HashMap;
 use url::Url;
 /// This allows a field to have two types.
@@ -9945,223 +9945,169 @@ pub struct ClientSemanticTokensRequestFullDelta {
     pub delta: Option<bool>,
 }
 
+pub trait Notification {
+    type Params: DeserializeOwned + Serialize + Send + Sync;
+    const METHOD: LSPNotificationMethods;
+}
+
 /// The `workspace/didChangeWorkspaceFolders` notification is sent from the client to the server when the workspace
 /// folder configuration changes.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidChangeWorkspaceFoldersNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidChangeWorkspaceFoldersNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: DidChangeWorkspaceFoldersParams,
+impl Notification for DidChangeWorkspaceFoldersNotification {
+    const METHOD: LSPNotificationMethods =
+        LSPNotificationMethods::WorkspaceDidChangeWorkspaceFolders;
+    type Params = DidChangeWorkspaceFoldersParams;
 }
 
 /// The `window/workDoneProgress/cancel` notification is sent from  the client to the server to cancel a progress
 /// initiated on the server side.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct WorkDoneProgressCancelNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct WorkDoneProgressCancelNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: WorkDoneProgressCancelParams,
+impl Notification for WorkDoneProgressCancelNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::WindowWorkDoneProgressCancel;
+    type Params = WorkDoneProgressCancelParams;
 }
 
 /// The did create files notification is sent from the client to the server when
 /// files were created from within the client.
 ///
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidCreateFilesNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidCreateFilesNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: CreateFilesParams,
+impl Notification for DidCreateFilesNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::WorkspaceDidCreateFiles;
+    type Params = CreateFilesParams;
 }
 
 /// The did rename files notification is sent from the client to the server when
 /// files were renamed from within the client.
 ///
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidRenameFilesNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidRenameFilesNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: RenameFilesParams,
+impl Notification for DidRenameFilesNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::WorkspaceDidRenameFiles;
+    type Params = RenameFilesParams;
 }
 
 /// The will delete files request is sent from the client to the server before files are actually
 /// deleted as long as the deletion is triggered from within the client.
 ///
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidDeleteFilesNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidDeleteFilesNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: DeleteFilesParams,
+impl Notification for DidDeleteFilesNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::WorkspaceDidDeleteFiles;
+    type Params = DeleteFilesParams;
 }
 
 /// A notification sent when a notebook opens.
 ///
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidOpenNotebookDocumentNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidOpenNotebookDocumentNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: DidOpenNotebookDocumentParams,
+impl Notification for DidOpenNotebookDocumentNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::NotebookDocumentDidOpen;
+    type Params = DidOpenNotebookDocumentParams;
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidChangeNotebookDocumentNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidChangeNotebookDocumentNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: DidChangeNotebookDocumentParams,
+impl Notification for DidChangeNotebookDocumentNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::NotebookDocumentDidChange;
+    type Params = DidChangeNotebookDocumentParams;
 }
 
 /// A notification sent when a notebook document is saved.
 ///
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidSaveNotebookDocumentNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidSaveNotebookDocumentNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: DidSaveNotebookDocumentParams,
+impl Notification for DidSaveNotebookDocumentNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::NotebookDocumentDidSave;
+    type Params = DidSaveNotebookDocumentParams;
 }
 
 /// A notification sent when a notebook closes.
 ///
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidCloseNotebookDocumentNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidCloseNotebookDocumentNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: DidCloseNotebookDocumentParams,
+impl Notification for DidCloseNotebookDocumentNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::NotebookDocumentDidClose;
+    type Params = DidCloseNotebookDocumentParams;
 }
 
 /// The initialized notification is sent from the client to the
 /// server after the client is fully initialized and the server
 /// is allowed to send requests from the server to the client.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct InitializedNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct InitializedNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub params: Option<LSPAny>,
+impl Notification for InitializedNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::Initialized;
+    type Params = InitializedParams;
 }
 
 /// The exit event is sent from the client to the server to
 /// ask the server to exit its process.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct ExitNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct ExitNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
+impl Notification for ExitNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::Exit;
+    type Params = LSPNull;
 }
 
 /// The configuration change notification is sent from the client to the server
 /// when the client's configuration has changed. The notification contains
 /// the changed configuration as defined by the language client.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidChangeConfigurationNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidChangeConfigurationNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: DidChangeConfigurationParams,
+impl Notification for DidChangeConfigurationNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::WorkspaceDidChangeConfiguration;
+    type Params = DidChangeConfigurationParams;
 }
 
 /// The show message notification is sent from a server to a client to ask
 /// the client to display a particular message in the user interface.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct ShowMessageNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct ShowMessageNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: ShowMessageParams,
+impl Notification for ShowMessageNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::WindowShowMessage;
+    type Params = ShowMessageParams;
 }
 
 /// The log message notification is sent from the server to the client to ask
 /// the client to log a particular message.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct LogMessageNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct LogMessageNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: LogMessageParams,
+impl Notification for LogMessageNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::WindowLogMessage;
+    type Params = LogMessageParams;
 }
 
 /// The telemetry event notification is sent from the server to the client to ask
 /// the client to log telemetry data.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct TelemetryEventNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct TelemetryEventNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub params: Option<LSPAny>,
+impl Notification for TelemetryEventNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::TelemetryEvent;
+    type Params = LSPAny;
 }
 
 /// The document open notification is sent from the client to the server to signal
@@ -10172,30 +10118,22 @@ pub struct TelemetryEventNotification {
 /// be sent more than once without a corresponding close notification send before.
 /// This means open and close notification must be balanced and the max open count
 /// is one.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidOpenTextDocumentNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidOpenTextDocumentNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: DidOpenTextDocumentParams,
+impl Notification for DidOpenTextDocumentNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::TextDocumentDidOpen;
+    type Params = DidOpenTextDocumentParams;
 }
 
 /// The document change notification is sent from the client to the server to signal
 /// changes to a text document.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidChangeTextDocumentNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidChangeTextDocumentNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: DidChangeTextDocumentParams,
+impl Notification for DidChangeTextDocumentNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::TextDocumentDidChange;
+    type Params = DidChangeTextDocumentParams;
 }
 
 /// The document close notification is sent from the client to the server when
@@ -10205,120 +10143,90 @@ pub struct DidChangeTextDocumentNotification {
 /// is about managing the document's content. Receiving a close notification
 /// doesn't mean that the document was open in an editor before. A close
 /// notification requires a previous open notification to be sent.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidCloseTextDocumentNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidCloseTextDocumentNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: DidCloseTextDocumentParams,
+impl Notification for DidCloseTextDocumentNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::TextDocumentDidClose;
+    type Params = DidCloseTextDocumentParams;
 }
 
 /// The document save notification is sent from the client to the server when
 /// the document got saved in the client.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidSaveTextDocumentNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidSaveTextDocumentNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: DidSaveTextDocumentParams,
+impl Notification for DidSaveTextDocumentNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::TextDocumentDidSave;
+    type Params = DidSaveTextDocumentParams;
 }
 
 /// A document will save notification is sent from the client to the server before
 /// the document is actually saved.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct WillSaveTextDocumentNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct WillSaveTextDocumentNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: WillSaveTextDocumentParams,
+impl Notification for WillSaveTextDocumentNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::TextDocumentWillSave;
+    type Params = WillSaveTextDocumentParams;
 }
 
 /// The watched files notification is sent from the client to the server when
 /// the client detects changes to file watched by the language client.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DidChangeWatchedFilesNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DidChangeWatchedFilesNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: DidChangeWatchedFilesParams,
+impl Notification for DidChangeWatchedFilesNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::WorkspaceDidChangeWatchedFiles;
+    type Params = DidChangeWatchedFilesParams;
 }
 
 /// Diagnostics notification are sent from the server to the client to signal
 /// results of validation runs.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct PublishDiagnosticsNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct PublishDiagnosticsNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: PublishDiagnosticsParams,
+impl Notification for PublishDiagnosticsNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::TextDocumentPublishDiagnostics;
+    type Params = PublishDiagnosticsParams;
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct SetTraceNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct SetTraceNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: SetTraceParams,
+impl Notification for SetTraceNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::SetTrace;
+    type Params = SetTraceParams;
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct LogTraceNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct LogTraceNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: LogTraceParams,
+impl Notification for LogTraceNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::LogTrace;
+    type Params = LogTraceParams;
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CancelNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct CancelNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
-
-    pub params: CancelParams,
+impl Notification for CancelNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::CancelRequest;
+    type Params = CancelParams;
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct ProgressNotification {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct ProgressNotification;
 
-    /// The method to be invoked.
-    pub method: LSPNotificationMethods,
+impl Notification for ProgressNotification {
+    const METHOD: LSPNotificationMethods = LSPNotificationMethods::Progress;
+    type Params = ProgressParams;
+}
 
-    pub params: ProgressParams,
+pub trait Request {
+    type Params: DeserializeOwned + Serialize + Send + Sync;
+    type Result: DeserializeOwned + Serialize + Send + Sync;
+    const METHOD: LSPRequestMethods;
 }
 
 /// An identifier to denote a specific request.
@@ -10370,16 +10278,16 @@ impl Serialize for Version {
     }
 }
 
-#[derive(Clone, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Eq, Deserialize, Serialize, Debug)]
 #[serde(untagged)]
 pub enum Payload<T> {
     Ok { result: T },
     Err { error: ResponseError },
 }
 
-#[derive(Clone, PartialEq, Eq, Deserialize, Serialize, Default)]
+#[derive(Clone, PartialEq, Eq, Deserialize, Serialize, Debug)]
 pub struct ResponseError {
-    code: OR2<ErrorCodes, LspErrorCodes>,
+    code: OR2<ErrorCodes, LSPErrorCodes>,
     message: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     data: Option<LSPAny>,
@@ -10388,19 +10296,13 @@ pub struct ResponseError {
 /// A request to resolve the implementation locations of a symbol at a given text
 /// document position. The request's parameter is of type [TextDocumentPositionParams]
 /// the response is of type [Definition] or a Thenable that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct ImplementationRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct ImplementationRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: ImplementationParams,
+impl Request for ImplementationRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentImplementation;
+    type Params = ImplementationParams;
+    type Result = Option<OR2<Definition, Vec<DefinitionLink>>>;
 }
 
 /// Response to the [ImplementationRequest].
@@ -10420,19 +10322,13 @@ pub struct ImplementationResponse {
 /// A request to resolve the type definition locations of a symbol at a given text
 /// document position. The request's parameter is of type [TextDocumentPositionParams]
 /// the response is of type [Definition] or a Thenable that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct TypeDefinitionRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct TypeDefinitionRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: TypeDefinitionParams,
+impl Request for TypeDefinitionRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentTypeDefinition;
+    type Params = TypeDefinitionParams;
+    type Result = Option<OR2<Definition, Vec<DefinitionLink>>>;
 }
 
 /// Response to the [TypeDefinitionRequest].
@@ -10450,17 +10346,13 @@ pub struct TypeDefinitionResponse {
 }
 
 /// The `workspace/workspaceFolders` is sent from the server to the client to fetch the open workspace folders.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct WorkspaceFoldersRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct WorkspaceFoldersRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
+impl Request for WorkspaceFoldersRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceWorkspaceFolders;
+    type Params = LSPNull;
+    type Result = LSPNull;
 }
 
 /// Response to the [WorkspaceFoldersRequest].
@@ -10484,19 +10376,13 @@ pub struct WorkspaceFoldersResponse {
 /// event. If the server still needs to react to configuration changes (since the server caches the
 /// result of `workspace/configuration` requests) the server should register for an empty configuration
 /// change event and empty the cache if such an event is received.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct ConfigurationRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct ConfigurationRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: ConfigurationParams,
+impl Request for ConfigurationRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceConfiguration;
+    type Params = ConfigurationParams;
+    type Result = Vec<LSPAny>;
 }
 
 /// Response to the [ConfigurationRequest].
@@ -10517,19 +10403,13 @@ pub struct ConfigurationResponse {
 /// parameter is of type [DocumentColorParams] the
 /// response is of type {@link ColorInformation ColorInformation[]} or a Thenable
 /// that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DocumentColorRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DocumentColorRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: DocumentColorParams,
+impl Request for DocumentColorRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentDocumentColor;
+    type Params = DocumentColorParams;
+    type Result = Vec<ColorInformation>;
 }
 
 /// Response to the [DocumentColorRequest].
@@ -10550,19 +10430,13 @@ pub struct DocumentColorResponse {
 /// parameter is of type [ColorPresentationParams] the
 /// response is of type {@link ColorInformation ColorInformation[]} or a Thenable
 /// that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct ColorPresentationRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct ColorPresentationRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: ColorPresentationParams,
+impl Request for ColorPresentationRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentColorPresentation;
+    type Params = ColorPresentationParams;
+    type Result = Vec<ColorPresentation>;
 }
 
 /// Response to the [ColorPresentationRequest].
@@ -10583,19 +10457,13 @@ pub struct ColorPresentationResponse {
 /// parameter is of type [FoldingRangeParams], the
 /// response is of type [FoldingRangeList] or a Thenable
 /// that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct FoldingRangeRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct FoldingRangeRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: FoldingRangeParams,
+impl Request for FoldingRangeRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentFoldingRange;
+    type Params = FoldingRangeParams;
+    type Result = Option<Vec<FoldingRange>>;
 }
 
 /// Response to the [FoldingRangeRequest].
@@ -10614,17 +10482,13 @@ pub struct FoldingRangeResponse {
 
 /// @since 3.18.0
 /// @proposed
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct FoldingRangeRefreshRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct FoldingRangeRefreshRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
+impl Request for FoldingRangeRefreshRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceFoldingRangeRefresh;
+    type Params = LSPNull;
+    type Result = LSPNull;
 }
 
 /// Response to the [FoldingRangeRefreshRequest].
@@ -10645,19 +10509,13 @@ pub struct FoldingRangeRefreshResponse {
 /// document position. The request's parameter is of type [TextDocumentPositionParams]
 /// the response is of type [Declaration] or a typed array of [DeclarationLink]
 /// or a Thenable that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DeclarationRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DeclarationRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: DeclarationParams,
+impl Request for DeclarationRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentDeclaration;
+    type Params = DeclarationParams;
+    type Result = Option<OR2<Declaration, Vec<DeclarationLink>>>;
 }
 
 /// Response to the [DeclarationRequest].
@@ -10678,19 +10536,13 @@ pub struct DeclarationResponse {
 /// parameter is of type [SelectionRangeParams], the
 /// response is of type {@link SelectionRange SelectionRange[]} or a Thenable
 /// that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct SelectionRangeRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct SelectionRangeRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: SelectionRangeParams,
+impl Request for SelectionRangeRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentSelectionRange;
+    type Params = SelectionRangeParams;
+    type Result = Option<Vec<SelectionRange>>;
 }
 
 /// Response to the [SelectionRangeRequest].
@@ -10709,19 +10561,13 @@ pub struct SelectionRangeResponse {
 
 /// The `window/workDoneProgress/create` request is sent from the server to the client to initiate progress
 /// reporting from the server.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct WorkDoneProgressCreateRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct WorkDoneProgressCreateRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: WorkDoneProgressCreateParams,
+impl Request for WorkDoneProgressCreateRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WindowWorkDoneProgressCreate;
+    type Params = WorkDoneProgressCreateParams;
+    type Result = LSPNull;
 }
 
 /// Response to the [WorkDoneProgressCreateRequest].
@@ -10742,19 +10588,13 @@ pub struct WorkDoneProgressCreateResponse {
 /// Can be used as an input to an incoming or outgoing call hierarchy.
 ///
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CallHierarchyPrepareRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct CallHierarchyPrepareRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: CallHierarchyPrepareParams,
+impl Request for CallHierarchyPrepareRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentPrepareCallHierarchy;
+    type Params = CallHierarchyPrepareParams;
+    type Result = Option<Vec<CallHierarchyItem>>;
 }
 
 /// Response to the [CallHierarchyPrepareRequest].
@@ -10774,19 +10614,13 @@ pub struct CallHierarchyPrepareResponse {
 /// A request to resolve the incoming calls for a given `CallHierarchyItem`.
 ///
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CallHierarchyIncomingCallsRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct CallHierarchyIncomingCallsRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: CallHierarchyIncomingCallsParams,
+impl Request for CallHierarchyIncomingCallsRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::CallHierarchyIncomingCalls;
+    type Params = CallHierarchyIncomingCallsParams;
+    type Result = Option<Vec<CallHierarchyIncomingCall>>;
 }
 
 /// Response to the [CallHierarchyIncomingCallsRequest].
@@ -10806,19 +10640,13 @@ pub struct CallHierarchyIncomingCallsResponse {
 /// A request to resolve the outgoing calls for a given `CallHierarchyItem`.
 ///
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CallHierarchyOutgoingCallsRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct CallHierarchyOutgoingCallsRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: CallHierarchyOutgoingCallsParams,
+impl Request for CallHierarchyOutgoingCallsRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::CallHierarchyOutgoingCalls;
+    type Params = CallHierarchyOutgoingCallsParams;
+    type Result = Option<Vec<CallHierarchyOutgoingCall>>;
 }
 
 /// Response to the [CallHierarchyOutgoingCallsRequest].
@@ -10836,19 +10664,13 @@ pub struct CallHierarchyOutgoingCallsResponse {
 }
 
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct SemanticTokensRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct SemanticTokensRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: SemanticTokensParams,
+impl Request for SemanticTokensRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentSemanticTokensFull;
+    type Params = SemanticTokensParams;
+    type Result = Option<SemanticTokens>;
 }
 
 /// Response to the [SemanticTokensRequest].
@@ -10866,19 +10688,13 @@ pub struct SemanticTokensResponse {
 }
 
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct SemanticTokensDeltaRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct SemanticTokensDeltaRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: SemanticTokensDeltaParams,
+impl Request for SemanticTokensDeltaRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentSemanticTokensFullDelta;
+    type Params = SemanticTokensDeltaParams;
+    type Result = Option<OR2<SemanticTokens, SemanticTokensDelta>>;
 }
 
 /// Response to the [SemanticTokensDeltaRequest].
@@ -10896,19 +10712,13 @@ pub struct SemanticTokensDeltaResponse {
 }
 
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct SemanticTokensRangeRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct SemanticTokensRangeRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: SemanticTokensRangeParams,
+impl Request for SemanticTokensRangeRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentSemanticTokensRange;
+    type Params = SemanticTokensRangeParams;
+    type Result = Option<SemanticTokens>;
 }
 
 /// Response to the [SemanticTokensRangeRequest].
@@ -10926,17 +10736,13 @@ pub struct SemanticTokensRangeResponse {
 }
 
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct SemanticTokensRefreshRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct SemanticTokensRefreshRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
+impl Request for SemanticTokensRefreshRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceSemanticTokensRefresh;
+    type Params = LSPNull;
+    type Result = LSPNull;
 }
 
 /// Response to the [SemanticTokensRefreshRequest].
@@ -10959,19 +10765,13 @@ pub struct SemanticTokensRefreshResponse {
 /// will very likely open the URI in a WEB browser.
 ///
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct ShowDocumentRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct ShowDocumentRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: ShowDocumentParams,
+impl Request for ShowDocumentRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WindowShowDocument;
+    type Params = ShowDocumentParams;
+    type Result = ShowDocumentResult;
 }
 
 /// Response to the [ShowDocumentRequest].
@@ -10991,19 +10791,13 @@ pub struct ShowDocumentResponse {
 /// A request to provide ranges that can be edited together.
 ///
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct LinkedEditingRangeRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct LinkedEditingRangeRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: LinkedEditingRangeParams,
+impl Request for LinkedEditingRangeRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentLinkedEditingRange;
+    type Params = LinkedEditingRangeParams;
+    type Result = Option<LinkedEditingRanges>;
 }
 
 /// Response to the [LinkedEditingRangeRequest].
@@ -11028,19 +10822,13 @@ pub struct LinkedEditingRangeResponse {
 /// to be created.
 ///
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct WillCreateFilesRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct WillCreateFilesRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: CreateFilesParams,
+impl Request for WillCreateFilesRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceWillCreateFiles;
+    type Params = CreateFilesParams;
+    type Result = Option<WorkspaceEdit>;
 }
 
 /// Response to the [WillCreateFilesRequest].
@@ -11061,19 +10849,13 @@ pub struct WillCreateFilesResponse {
 /// renamed as long as the rename is triggered from within the client.
 ///
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct WillRenameFilesRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct WillRenameFilesRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: RenameFilesParams,
+impl Request for WillRenameFilesRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceWillRenameFiles;
+    type Params = RenameFilesParams;
+    type Result = Option<WorkspaceEdit>;
 }
 
 /// Response to the [WillRenameFilesRequest].
@@ -11094,19 +10876,13 @@ pub struct WillRenameFilesResponse {
 /// files were deleted from within the client.
 ///
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct WillDeleteFilesRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct WillDeleteFilesRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: DeleteFilesParams,
+impl Request for WillDeleteFilesRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceWillDeleteFiles;
+    type Params = DeleteFilesParams;
+    type Result = Option<WorkspaceEdit>;
 }
 
 /// Response to the [WillDeleteFilesRequest].
@@ -11126,19 +10902,13 @@ pub struct WillDeleteFilesResponse {
 /// A request to get the moniker of a symbol at a given text document position.
 /// The request parameter is of type [TextDocumentPositionParams].
 /// The response is of type {@link Moniker Moniker[]} or `null`.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct MonikerRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct MonikerRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: MonikerParams,
+impl Request for MonikerRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentMoniker;
+    type Params = MonikerParams;
+    type Result = Option<Vec<Moniker>>;
 }
 
 /// Response to the [MonikerRequest].
@@ -11159,19 +10929,13 @@ pub struct MonikerResponse {
 /// Can be used as an input to a subtypes or supertypes type hierarchy.
 ///
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct TypeHierarchyPrepareRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct TypeHierarchyPrepareRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: TypeHierarchyPrepareParams,
+impl Request for TypeHierarchyPrepareRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentPrepareTypeHierarchy;
+    type Params = TypeHierarchyPrepareParams;
+    type Result = Option<Vec<TypeHierarchyItem>>;
 }
 
 /// Response to the [TypeHierarchyPrepareRequest].
@@ -11191,19 +10955,13 @@ pub struct TypeHierarchyPrepareResponse {
 /// A request to resolve the supertypes for a given `TypeHierarchyItem`.
 ///
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct TypeHierarchySupertypesRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct TypeHierarchySupertypesRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: TypeHierarchySupertypesParams,
+impl Request for TypeHierarchySupertypesRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TypeHierarchySupertypes;
+    type Params = TypeHierarchySupertypesParams;
+    type Result = Option<Vec<TypeHierarchyItem>>;
 }
 
 /// Response to the [TypeHierarchySupertypesRequest].
@@ -11223,19 +10981,13 @@ pub struct TypeHierarchySupertypesResponse {
 /// A request to resolve the subtypes for a given `TypeHierarchyItem`.
 ///
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct TypeHierarchySubtypesRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct TypeHierarchySubtypesRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: TypeHierarchySubtypesParams,
+impl Request for TypeHierarchySubtypesRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TypeHierarchySubtypes;
+    type Params = TypeHierarchySubtypesParams;
+    type Result = Option<Vec<TypeHierarchyItem>>;
 }
 
 /// Response to the [TypeHierarchySubtypesRequest].
@@ -11257,19 +11009,13 @@ pub struct TypeHierarchySubtypesResponse {
 /// {@link InlineValue InlineValue[]} or a Thenable that resolves to such.
 ///
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct InlineValueRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct InlineValueRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: InlineValueParams,
+impl Request for InlineValueRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentInlineValue;
+    type Params = InlineValueParams;
+    type Result = Option<Vec<InlineValue>>;
 }
 
 /// Response to the [InlineValueRequest].
@@ -11287,17 +11033,13 @@ pub struct InlineValueResponse {
 }
 
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct InlineValueRefreshRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct InlineValueRefreshRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
+impl Request for InlineValueRefreshRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceInlineValueRefresh;
+    type Params = LSPNull;
+    type Result = LSPNull;
 }
 
 /// Response to the [InlineValueRefreshRequest].
@@ -11319,19 +11061,13 @@ pub struct InlineValueRefreshResponse {
 /// {@link InlayHint InlayHint[]} or a Thenable that resolves to such.
 ///
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct InlayHintRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct InlayHintRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: InlayHintParams,
+impl Request for InlayHintRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentInlayHint;
+    type Params = InlayHintParams;
+    type Result = Option<Vec<InlayHint>>;
 }
 
 /// Response to the [InlayHintRequest].
@@ -11353,19 +11089,13 @@ pub struct InlayHintResponse {
 /// of type [InlayHint] or a Thenable that resolves to such.
 ///
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct InlayHintResolveRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct InlayHintResolveRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: InlayHint,
+impl Request for InlayHintResolveRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::InlayHintResolve;
+    type Params = InlayHint;
+    type Result = InlayHint;
 }
 
 /// Response to the [InlayHintResolveRequest].
@@ -11383,17 +11113,13 @@ pub struct InlayHintResolveResponse {
 }
 
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct InlayHintRefreshRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct InlayHintRefreshRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
+impl Request for InlayHintRefreshRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceInlayHintRefresh;
+    type Params = LSPNull;
+    type Result = LSPNull;
 }
 
 /// Response to the [InlayHintRefreshRequest].
@@ -11413,19 +11139,13 @@ pub struct InlayHintRefreshResponse {
 /// The document diagnostic request definition.
 ///
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DocumentDiagnosticRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DocumentDiagnosticRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: DocumentDiagnosticParams,
+impl Request for DocumentDiagnosticRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentDiagnostic;
+    type Params = DocumentDiagnosticParams;
+    type Result = DocumentDiagnosticReport;
 }
 
 /// Response to the [DocumentDiagnosticRequest].
@@ -11445,19 +11165,13 @@ pub struct DocumentDiagnosticResponse {
 /// The workspace diagnostic request definition.
 ///
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct WorkspaceDiagnosticRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct WorkspaceDiagnosticRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: WorkspaceDiagnosticParams,
+impl Request for WorkspaceDiagnosticRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceDiagnostic;
+    type Params = WorkspaceDiagnosticParams;
+    type Result = WorkspaceDiagnosticReport;
 }
 
 /// Response to the [WorkspaceDiagnosticRequest].
@@ -11477,17 +11191,13 @@ pub struct WorkspaceDiagnosticResponse {
 /// The diagnostic refresh request definition.
 ///
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DiagnosticRefreshRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DiagnosticRefreshRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
+impl Request for DiagnosticRefreshRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceDiagnosticRefresh;
+    type Params = LSPNull;
+    type Result = LSPNull;
 }
 
 /// Response to the [DiagnosticRefreshRequest].
@@ -11510,19 +11220,13 @@ pub struct DiagnosticRefreshResponse {
 ///
 /// @since 3.18.0
 /// @proposed
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct InlineCompletionRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct InlineCompletionRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: InlineCompletionParams,
+impl Request for InlineCompletionRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentInlineCompletion;
+    type Params = InlineCompletionParams;
+    type Result = Option<OR2<InlineCompletionList, Vec<InlineCompletionItem>>>;
 }
 
 /// Response to the [InlineCompletionRequest].
@@ -11544,19 +11248,13 @@ pub struct InlineCompletionResponse {
 ///
 /// @since 3.18.0
 /// @proposed
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct TextDocumentContentRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct TextDocumentContentRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: TextDocumentContentParams,
+impl Request for TextDocumentContentRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceTextDocumentContent;
+    type Params = TextDocumentContentParams;
+    type Result = TextDocumentContentResult;
 }
 
 /// Response to the [TextDocumentContentRequest].
@@ -11578,19 +11276,13 @@ pub struct TextDocumentContentResponse {
 ///
 /// @since 3.18.0
 /// @proposed
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct TextDocumentContentRefreshRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct TextDocumentContentRefreshRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: TextDocumentContentRefreshParams,
+impl Request for TextDocumentContentRefreshRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceTextDocumentContentRefresh;
+    type Params = TextDocumentContentRefreshParams;
+    type Result = LSPNull;
 }
 
 /// Response to the [TextDocumentContentRefreshRequest].
@@ -11609,19 +11301,13 @@ pub struct TextDocumentContentRefreshResponse {
 
 /// The `client/registerCapability` request is sent from the server to the client to register a new capability
 /// handler on the client side.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct RegistrationRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct RegistrationRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: RegistrationParams,
+impl Request for RegistrationRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::ClientRegisterCapability;
+    type Params = RegistrationParams;
+    type Result = LSPNull;
 }
 
 /// Response to the [RegistrationRequest].
@@ -11640,19 +11326,13 @@ pub struct RegistrationResponse {
 
 /// The `client/unregisterCapability` request is sent from the server to the client to unregister a previously registered capability
 /// handler on the client side.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct UnregistrationRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct UnregistrationRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: UnregistrationParams,
+impl Request for UnregistrationRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::ClientUnregisterCapability;
+    type Params = UnregistrationParams;
+    type Result = LSPNull;
 }
 
 /// Response to the [UnregistrationRequest].
@@ -11674,19 +11354,13 @@ pub struct UnregistrationResponse {
 /// The requests parameter is of type [InitializeParams]
 /// the response if of type [InitializeResult] of a Thenable that
 /// resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct InitializeRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct InitializeRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: InitializeParams,
+impl Request for InitializeRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::Initialize;
+    type Params = InitializeParams;
+    type Result = InitializeResult;
 }
 
 /// Response to the [InitializeRequest].
@@ -11707,17 +11381,13 @@ pub struct InitializeResponse {
 /// It is sent once when the client decides to shutdown the
 /// server. The only notification that is sent after a shutdown request
 /// is the exit event.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct ShutdownRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct ShutdownRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
+impl Request for ShutdownRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::Shutdown;
+    type Params = LSPNull;
+    type Result = LSPNull;
 }
 
 /// Response to the [ShutdownRequest].
@@ -11736,19 +11406,13 @@ pub struct ShutdownResponse {
 
 /// The show message request is sent from the server to the client to show a message
 /// and a set of options actions to the user.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct ShowMessageRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct ShowMessageRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: ShowMessageRequestParams,
+impl Request for ShowMessageRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WindowShowMessageRequest;
+    type Params = ShowMessageRequestParams;
+    type Result = Option<MessageActionItem>;
 }
 
 /// Response to the [ShowMessageRequest].
@@ -11771,19 +11435,13 @@ pub struct ShowMessageResponse {
 /// clients might drop results if computing the text edits took too long or if a
 /// server constantly fails on this request. This is done to keep the save fast and
 /// reliable.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct WillSaveTextDocumentWaitUntilRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct WillSaveTextDocumentWaitUntilRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: WillSaveTextDocumentParams,
+impl Request for WillSaveTextDocumentWaitUntilRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentWillSaveWaitUntil;
+    type Params = WillSaveTextDocumentParams;
+    type Result = Option<Vec<TextEdit>>;
 }
 
 /// Response to the [WillSaveTextDocumentWaitUntilRequest].
@@ -11809,19 +11467,13 @@ pub struct WillSaveTextDocumentWaitUntilResponse {
 /// and [`documentation`][`CompletionItem::documentation`] properties to the `completionItem/resolve`
 /// request. However, properties that are needed for the initial sorting and filtering, like `sortText`,
 /// `filterText`, `insertText`, and `textEdit`, must not be changed during resolve.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CompletionRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct CompletionRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: CompletionParams,
+impl Request for CompletionRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentCompletion;
+    type Params = CompletionParams;
+    type Result = Option<OR2<Vec<CompletionItem>, CompletionList>>;
 }
 
 /// Response to the [CompletionRequest].
@@ -11841,19 +11493,13 @@ pub struct CompletionResponse {
 /// Request to resolve additional information for a given completion item.The request's
 /// parameter is of type [CompletionItem] the response
 /// is of type [CompletionItem] or a Thenable that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CompletionResolveRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct CompletionResolveRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: CompletionItem,
+impl Request for CompletionResolveRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::CompletionItemResolve;
+    type Params = CompletionItem;
+    type Result = CompletionItem;
 }
 
 /// Response to the [CompletionResolveRequest].
@@ -11873,19 +11519,13 @@ pub struct CompletionResolveResponse {
 /// Request to request hover information at a given text document position. The request's
 /// parameter is of type [TextDocumentPosition] the response is of
 /// type [Hover] or a Thenable that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct HoverRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct HoverRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: HoverParams,
+impl Request for HoverRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentHover;
+    type Params = HoverParams;
+    type Result = Option<Hover>;
 }
 
 /// Response to the [HoverRequest].
@@ -11902,19 +11542,13 @@ pub struct HoverResponse {
     pub payload: Payload<Option<Hover>>,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct SignatureHelpRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct SignatureHelpRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: SignatureHelpParams,
+impl Request for SignatureHelpRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentSignatureHelp;
+    type Params = SignatureHelpParams;
+    type Result = Option<SignatureHelp>;
 }
 
 /// Response to the [SignatureHelpRequest].
@@ -11935,19 +11569,13 @@ pub struct SignatureHelpResponse {
 /// document position. The request's parameter is of type [TextDocumentPosition]
 /// the response is of either type [Definition] or a typed array of
 /// [DefinitionLink] or a Thenable that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DefinitionRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DefinitionRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: DefinitionParams,
+impl Request for DefinitionRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentDefinition;
+    type Params = DefinitionParams;
+    type Result = Option<OR2<Definition, Vec<DefinitionLink>>>;
 }
 
 /// Response to the [DefinitionRequest].
@@ -11968,19 +11596,13 @@ pub struct DefinitionResponse {
 /// by the given text document position. The request's parameter is of
 /// type [ReferenceParams] the response is of type
 /// {@link Location Location[]} or a Thenable that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct ReferencesRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct ReferencesRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: ReferenceParams,
+impl Request for ReferencesRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentReferences;
+    type Params = ReferenceParams;
+    type Result = Option<Vec<Location>>;
 }
 
 /// Response to the [ReferencesRequest].
@@ -12001,19 +11623,13 @@ pub struct ReferencesResponse {
 /// text document position. The request's parameter is of type [TextDocumentPosition]
 /// the request response is an array of type [DocumentHighlight]
 /// or a Thenable that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DocumentHighlightRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DocumentHighlightRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: DocumentHighlightParams,
+impl Request for DocumentHighlightRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentDocumentHighlight;
+    type Params = DocumentHighlightParams;
+    type Result = Option<Vec<DocumentHighlight>>;
 }
 
 /// Response to the [DocumentHighlightRequest].
@@ -12034,19 +11650,13 @@ pub struct DocumentHighlightResponse {
 /// parameter is of type [TextDocumentIdentifier] the
 /// response is of type {@link SymbolInformation SymbolInformation[]} or a Thenable
 /// that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DocumentSymbolRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DocumentSymbolRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: DocumentSymbolParams,
+impl Request for DocumentSymbolRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentDocumentSymbol;
+    type Params = DocumentSymbolParams;
+    type Result = Option<OR2<Vec<SymbolInformation>, Vec<DocumentSymbol>>>;
 }
 
 /// Response to the [DocumentSymbolRequest].
@@ -12064,19 +11674,13 @@ pub struct DocumentSymbolResponse {
 }
 
 /// A request to provide commands for the given text document and range.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CodeActionRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct CodeActionRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: CodeActionParams,
+impl Request for CodeActionRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentCodeAction;
+    type Params = CodeActionParams;
+    type Result = Option<Vec<OR2<Command, CodeAction>>>;
 }
 
 /// Response to the [CodeActionRequest].
@@ -12096,19 +11700,13 @@ pub struct CodeActionResponse {
 /// Request to resolve additional information for a given code action.The request's
 /// parameter is of type [CodeAction] the response
 /// is of type [CodeAction] or a Thenable that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CodeActionResolveRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct CodeActionResolveRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: CodeAction,
+impl Request for CodeActionResolveRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::CodeActionResolve;
+    type Params = CodeAction;
+    type Result = CodeAction;
 }
 
 /// Response to the [CodeActionResolveRequest].
@@ -12133,19 +11731,13 @@ pub struct CodeActionResolveResponse {
 /// @since 3.17.0 - support for WorkspaceSymbol in the returned data. Clients
 ///  need to advertise support for WorkspaceSymbols via the client capability
 ///  `workspace.symbol.resolveSupport`.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct WorkspaceSymbolRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct WorkspaceSymbolRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: WorkspaceSymbolParams,
+impl Request for WorkspaceSymbolRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceSymbol;
+    type Params = WorkspaceSymbolParams;
+    type Result = Option<OR2<Vec<SymbolInformation>, Vec<WorkspaceSymbol>>>;
 }
 
 /// Response to the [WorkspaceSymbolRequest].
@@ -12166,19 +11758,13 @@ pub struct WorkspaceSymbolResponse {
 /// symbol's location.
 ///
 /// @since 3.17.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct WorkspaceSymbolResolveRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct WorkspaceSymbolResolveRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: WorkspaceSymbol,
+impl Request for WorkspaceSymbolResolveRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceSymbolResolve;
+    type Params = WorkspaceSymbol;
+    type Result = WorkspaceSymbol;
 }
 
 /// Response to the [WorkspaceSymbolResolveRequest].
@@ -12196,19 +11782,13 @@ pub struct WorkspaceSymbolResolveResponse {
 }
 
 /// A request to provide code lens for the given text document.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CodeLensRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct CodeLensRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: CodeLensParams,
+impl Request for CodeLensRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentCodeLens;
+    type Params = CodeLensParams;
+    type Result = Option<Vec<CodeLens>>;
 }
 
 /// Response to the [CodeLensRequest].
@@ -12226,19 +11806,13 @@ pub struct CodeLensResponse {
 }
 
 /// A request to resolve a command for a given code lens.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CodeLensResolveRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct CodeLensResolveRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: CodeLens,
+impl Request for CodeLensResolveRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::CodeLensResolve;
+    type Params = CodeLens;
+    type Result = CodeLens;
 }
 
 /// Response to the [CodeLensResolveRequest].
@@ -12258,17 +11832,13 @@ pub struct CodeLensResolveResponse {
 /// A request to refresh all code actions
 ///
 /// @since 3.16.0
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct CodeLensRefreshRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct CodeLensRefreshRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
+impl Request for CodeLensRefreshRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceCodeLensRefresh;
+    type Params = LSPNull;
+    type Result = LSPNull;
 }
 
 /// Response to the [CodeLensRefreshRequest].
@@ -12286,19 +11856,13 @@ pub struct CodeLensRefreshResponse {
 }
 
 /// A request to provide document links
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DocumentLinkRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DocumentLinkRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: DocumentLinkParams,
+impl Request for DocumentLinkRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentDocumentLink;
+    type Params = DocumentLinkParams;
+    type Result = Option<Vec<DocumentLink>>;
 }
 
 /// Response to the [DocumentLinkRequest].
@@ -12318,19 +11882,13 @@ pub struct DocumentLinkResponse {
 /// Request to resolve additional information for a given document link. The request's
 /// parameter is of type [DocumentLink] the response
 /// is of type [DocumentLink] or a Thenable that resolves to such.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DocumentLinkResolveRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DocumentLinkResolveRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: DocumentLink,
+impl Request for DocumentLinkResolveRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::DocumentLinkResolve;
+    type Params = DocumentLink;
+    type Result = DocumentLink;
 }
 
 /// Response to the [DocumentLinkResolveRequest].
@@ -12348,19 +11906,13 @@ pub struct DocumentLinkResolveResponse {
 }
 
 /// A request to format a whole document.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DocumentFormattingRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DocumentFormattingRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: DocumentFormattingParams,
+impl Request for DocumentFormattingRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentFormatting;
+    type Params = DocumentFormattingParams;
+    type Result = Option<Vec<TextEdit>>;
 }
 
 /// Response to the [DocumentFormattingRequest].
@@ -12378,19 +11930,13 @@ pub struct DocumentFormattingResponse {
 }
 
 /// A request to format a range in a document.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DocumentRangeFormattingRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DocumentRangeFormattingRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: DocumentRangeFormattingParams,
+impl Request for DocumentRangeFormattingRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentRangeFormatting;
+    type Params = DocumentRangeFormattingParams;
+    type Result = Option<Vec<TextEdit>>;
 }
 
 /// Response to the [DocumentRangeFormattingRequest].
@@ -12411,19 +11957,13 @@ pub struct DocumentRangeFormattingResponse {
 ///
 /// @since 3.18.0
 /// @proposed
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DocumentRangesFormattingRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DocumentRangesFormattingRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: DocumentRangesFormattingParams,
+impl Request for DocumentRangesFormattingRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentRangesFormatting;
+    type Params = DocumentRangesFormattingParams;
+    type Result = Option<Vec<TextEdit>>;
 }
 
 /// Response to the [DocumentRangesFormattingRequest].
@@ -12441,19 +11981,13 @@ pub struct DocumentRangesFormattingResponse {
 }
 
 /// A request to format a document on type.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct DocumentOnTypeFormattingRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct DocumentOnTypeFormattingRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: DocumentOnTypeFormattingParams,
+impl Request for DocumentOnTypeFormattingRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentOnTypeFormatting;
+    type Params = DocumentOnTypeFormattingParams;
+    type Result = Option<Vec<TextEdit>>;
 }
 
 /// Response to the [DocumentOnTypeFormattingRequest].
@@ -12471,19 +12005,13 @@ pub struct DocumentOnTypeFormattingResponse {
 }
 
 /// A request to rename a symbol.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct RenameRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct RenameRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: RenameParams,
+impl Request for RenameRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentRename;
+    type Params = RenameParams;
+    type Result = Option<WorkspaceEdit>;
 }
 
 /// Response to the [RenameRequest].
@@ -12503,19 +12031,13 @@ pub struct RenameResponse {
 /// A request to test and perform the setup necessary for a rename.
 ///
 /// @since 3.16 - support for default behavior
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct PrepareRenameRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct PrepareRenameRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: PrepareRenameParams,
+impl Request for PrepareRenameRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::TextDocumentPrepareRename;
+    type Params = PrepareRenameParams;
+    type Result = Option<PrepareRenameResult>;
 }
 
 /// Response to the [PrepareRenameRequest].
@@ -12534,19 +12056,13 @@ pub struct PrepareRenameResponse {
 
 /// A request send from the client to the server to execute a command. The request might return
 /// a workspace edit which the client will apply to the workspace.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct ExecuteCommandRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct ExecuteCommandRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: ExecuteCommandParams,
+impl Request for ExecuteCommandRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceExecuteCommand;
+    type Params = ExecuteCommandParams;
+    type Result = Option<LSPAny>;
 }
 
 /// Response to the [ExecuteCommandRequest].
@@ -12564,19 +12080,13 @@ pub struct ExecuteCommandResponse {
 }
 
 /// A request sent from the server to the client to modified certain resources.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct ApplyWorkspaceEditRequest {
-    /// The version of the JSON RPC protocol.
-    pub jsonrpc: Version,
+#[derive(Debug)]
+pub struct ApplyWorkspaceEditRequest;
 
-    /// The method to be invoked.
-    pub method: LSPRequestMethods,
-
-    /// The request id.
-    pub id: LSPId,
-
-    pub params: ApplyWorkspaceEditParams,
+impl Request for ApplyWorkspaceEditRequest {
+    const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceApplyEdit;
+    type Params = ApplyWorkspaceEditParams;
+    type Result = ApplyWorkspaceEditResult;
 }
 
 /// Response to the [ApplyWorkspaceEditRequest].

@@ -17,6 +17,7 @@ from .rust_commons import (
     get_type_name,
     struct_wrapper,
     type_alias_wrapper,
+    fix_lsp_method_name,
 )
 from .rust_lang_utils import get_parts, lines_to_doc_comments, to_upper_camel_case
 
@@ -285,6 +286,14 @@ def generate_struct(
 def generate_notifications(
     spec: model.LSPModel, types: TypeData
 ) -> Dict[str, List[str]]:
+    types.add_type_info(
+        model.ReferenceType(kind="reference", name="Notification"), "Notification", [
+            "pub trait Notification {",
+            "    type Params: DeserializeOwned + Serialize + Send + Sync;",
+            "    const METHOD: LSPNotificationMethods;",
+            "}",
+        ]
+    )
     for notification in spec.notifications:
         if not types.has_id(notification):
             generate_notification(notification, types, spec)
@@ -315,30 +324,19 @@ def required_rpc_properties(name: Optional[str] = None) -> List[model.Property]:
 def generate_notification(
     notification_def: model.Notification, types: TypeData, spec: model.LSPModel
 ) -> None:
-    properties = required_rpc_properties("LSPNotificationMethods")
-    if notification_def.params:
-        ptype = get_from_name(notification_def.params.name, spec)
-        if hasattr(ptype, "properties") and get_extended_properties(ptype, spec):
-            properties += [
-                model.Property(
-                    name="params",
-                    type=notification_def.params,
-                )
-            ]
-        else:
-            properties += [
-                model.Property(
-                    name="params",
-                    type=model.ReferenceType(kind="reference", name="LSPAny"),
-                    optional=True,
-                )
-            ]
-
-    inner = []
-    for prop_def in properties:
-        inner += generate_property(prop_def, types, spec)
-
-    lines = struct_wrapper(notification_def, inner, types, spec)
+    name = get_name(notification_def)
+    doc = _get_doc(notification_def.documentation)
+    extras = generate_extras(notification_def)
+    params = get_type_name(notification_def.params, types, spec) if notification_def.params else "LSPNull"
+    lines = doc + extras + [
+        "#[derive(Debug)]",
+        f"pub struct {name};",
+        "",
+        f"impl Notification for {name} {{",
+        f"    const METHOD: LSPNotificationMethods = LSPNotificationMethods::{fix_lsp_method_name(notification_def.method)};",
+        f"    type Params = {params};",
+        "}",
+    ]
     types.add_type_info(
         notification_def, get_message_type_name(notification_def), lines
     )
@@ -413,7 +411,7 @@ def generate_required_request_types(
         model.ReferenceType(kind="reference", name="Payload"),
         "Payload",
         [
-            "#[derive(Clone, PartialEq, Eq, Deserialize, Serialize)]",
+            "#[derive(Clone, PartialEq, Eq, Deserialize, Serialize, Debug)]",
             "#[serde(untagged)]",
             "pub enum Payload<T> {",
             "    Ok { result: T },",
@@ -426,9 +424,9 @@ def generate_required_request_types(
         model.ReferenceType(kind="reference", name="ResponseError"),
         "ResponseError",
         [
-            "#[derive(Clone, PartialEq, Eq, Deserialize, Serialize, Default)]",
+            "#[derive(Clone, PartialEq, Eq, Deserialize, Serialize, Debug)]",
             "pub struct ResponseError {",
-            "    code: OR2<ErrorCodes, LspErrorCodes>,",
+            "    code: OR2<ErrorCodes, LSPErrorCodes>,",
             "    message: String,",
             '    #[serde(skip_serializing_if = "Option::is_none")]',
             "    data: Option<LSPAny>,",
@@ -438,6 +436,15 @@ def generate_required_request_types(
 
 
 def generate_requests(spec: model.LSPModel, types: TypeData) -> Dict[str, List[str]]:
+    types.add_type_info(
+        model.ReferenceType(kind="reference", name="Request"), "Request", [
+            "pub trait Request {",
+            "    type Params: DeserializeOwned + Serialize + Send + Sync;",
+            "    type Result: DeserializeOwned + Serialize + Send + Sync;",
+            "    const METHOD: LSPRequestMethods;",
+            "}",
+        ]
+    )
     generate_required_request_types(spec, types)
     for request in spec.requests:
         if not types.has_id(request):
@@ -451,39 +458,21 @@ def generate_requests(spec: model.LSPModel, types: TypeData) -> Dict[str, List[s
 def generate_request(
     request_def: model.Request, types: TypeData, spec: model.LSPModel
 ) -> None:
-    properties = required_rpc_properties("LSPRequestMethods")
-
-    properties += [
-        model.Property(
-            name="id",
-            type=model.ReferenceType(kind="reference", name="LSPId"),
-            optional=False,
-            documentation="The request id.",
-        )
+    name = get_name(request_def)
+    doc = _get_doc(request_def.documentation)
+    extras = generate_extras(request_def)
+    params = get_type_name(request_def.params, types, spec) if request_def.params else "LSPNull"
+    result = get_type_name(request_def.result, types, spec) if request_def.params else "LSPNull"
+    lines = doc + extras + [
+        "#[derive(Debug)]",
+        f"pub struct {name};",
+        "",
+        f"impl Request for {name} {{",
+        f"    const METHOD: LSPRequestMethods = LSPRequestMethods::{fix_lsp_method_name(request_def.method)};",
+        f"    type Params = {params};",
+        f"    type Result = {result};",
+        "}",
     ]
-    if request_def.params:
-        ptype = get_from_name(request_def.params.name, spec)
-        if hasattr(ptype, "properties") and get_extended_properties(ptype, spec):
-            properties += [
-                model.Property(
-                    name="params",
-                    type=request_def.params,
-                )
-            ]
-        else:
-            properties += [
-                model.Property(
-                    name="params",
-                    type=model.ReferenceType(kind="reference", name="LSPAny"),
-                    optional=True,
-                )
-            ]
-
-    inner = []
-    for prop_def in properties:
-        inner += generate_property(prop_def, types, spec)
-
-    lines = struct_wrapper(request_def, inner, types, spec)
     types.add_type_info(request_def, get_message_type_name(request_def), lines)
 
 
