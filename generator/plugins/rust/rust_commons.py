@@ -362,7 +362,7 @@ def get_extended_properties(
     for p in properties:
         if not any((p.name == u.name) for u in unique_props):
             unique_props.append(p)
-    return sorted(unique_props, key=lambda p: p.name)
+    return unique_props
 
 
 def _is_str_enum(enum_def: model.Enum) -> bool:
