@@ -311,12 +311,15 @@ def generate_notifications(
             "    {",
             "        // This must always be either an Array or an Object. This will be guaranteed by the LSP,",
             "        // as to conform to the JSON-RPC spec.",
-            '        let params = serde_json::to_value(params).expect("Notification parameters should be serializable.");',
+            '        let params = match serde_json::to_value(params).expect("Notification parameters should be serializable.") {',
+            "            serde_json::Value::Null => None,",
+            "            value => Some(value),",
+            "        };",
             "",
             "        Self {",
             "            jsonrpc: Version,",
             "            method: R::METHOD,",
-            "            params: Some(params),",
+            "            params,",
             "        }",
             "    }",
             "}",
@@ -355,14 +358,14 @@ def generate_notification(
     name = get_name(notification_def)
     doc = _get_doc(notification_def.documentation)
     extras = generate_extras(notification_def)
-    params = get_type_name(notification_def.params, types, spec) if notification_def.params else "LSPNull"
+    params = get_type_name(notification_def.params, types, spec) + ";" if notification_def.params else "(); // No params"
     lines = doc + extras + [
         "#[derive(Debug)]",
         f"pub struct {name};",
         "",
         f"impl Notification for {name} {{",
         f"    const METHOD: LSPNotificationMethods = LSPNotificationMethods::{fix_lsp_method_name(notification_def.method)};",
-        f"    type Params = {params};",
+        f"    type Params = {params}",
         "}",
     ]
     types.add_type_info(

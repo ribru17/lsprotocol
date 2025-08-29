@@ -395,7 +395,8 @@ mod tests {
     #[test]
     fn test_request() {
         // `jsonrpc` field should be implicitly serialized without the user needing to do it. The
-        // `method` should also be properly inferred from the request type.
+        // `method` should also be properly inferred from the request type. In the case of no
+        // `params`, the field should NOT be serialized.
         let req = RequestMessage::from_request::<WorkspaceFoldersRequest>(LSPId::Int(1), ());
         assert_eq!(
             serde_json::to_string(&req).unwrap(),
@@ -415,6 +416,28 @@ mod tests {
         assert_eq!(
             serde_json::to_string(&req).unwrap(),
             r#"{"jsonrpc":"2.0","id":"the-id","method":"textDocument/documentSymbol","params":{"textDocument":{"uri":"file:///test"}}}"#
+        );
+    }
+
+    #[test]
+    fn test_notification() {
+        // `jsonrpc` field should be implicitly serialized without the user needing to do it. The
+        // `method` should also be properly inferred from the request type. In the case of no
+        // `params`, the field should NOT be serialized.
+        let noti = NotificationMessage::from_notification::<ExitNotification>(());
+        assert_eq!(
+            serde_json::to_string(&noti).unwrap(),
+            r#"{"jsonrpc":"2.0","method":"exit"}"#
+        );
+
+        let noti =
+            NotificationMessage::from_notification::<ShowMessageNotification>(ShowMessageParams {
+                message: "hello".into(),
+                type_: MessageType::Info,
+            });
+        assert_eq!(
+            serde_json::to_string(&noti).unwrap(),
+            r#"{"jsonrpc":"2.0","method":"window/showMessage","params":{"message":"hello","type":3}}"#
         );
     }
 }

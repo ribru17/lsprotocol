@@ -9967,13 +9967,17 @@ impl NotificationMessage {
     pub fn from_notification<R: Notification>(params: R::Params) -> Self {
         // This must always be either an Array or an Object. This will be guaranteed by the LSP,
         // as to conform to the JSON-RPC spec.
-        let params =
-            serde_json::to_value(params).expect("Notification parameters should be serializable.");
+        let params = match serde_json::to_value(params)
+            .expect("Notification parameters should be serializable.")
+        {
+            serde_json::Value::Null => None,
+            value => Some(value),
+        };
 
         Self {
             jsonrpc: Version,
             method: R::METHOD,
-            params: Some(params),
+            params,
         }
     }
 }
@@ -10094,7 +10098,7 @@ pub struct ExitNotification;
 
 impl Notification for ExitNotification {
     const METHOD: LSPNotificationMethods = LSPNotificationMethods::Exit;
-    type Params = LSPNull;
+    type Params = (); // No params
 }
 
 /// The configuration change notification is sent from the client to the server
