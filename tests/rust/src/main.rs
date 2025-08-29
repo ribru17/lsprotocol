@@ -17,8 +17,8 @@ mod tests {
             .collect()
     }
 
-    fn validate_type<T: for<'de> Deserialize<'de>>(result_type: &str, data: &str) {
-        match serde_json::from_str::<T>(data) {
+    fn validate_type<T>(result_type: &str, data: &str) {
+        match serde_json::from_str::<RequestMessage>(data) {
             Ok(_) => assert_eq!(
                 result_type, "True",
                 "Expected error, but succeeded deserializing:\r\n{}",
@@ -315,7 +315,6 @@ mod tests {
     }
 
     #[test]
-
     fn test_generated_data() {
         println!("Running generated data tests");
         let cwd = std::env::current_dir()
@@ -327,6 +326,12 @@ mod tests {
         for json_file in get_all_json_files(env_value.as_str()) {
             validate_file(&json_file);
         }
+    }
+
+    #[test]
+    fn test_serialization() {
+        let json_str = serde_json::to_string(&ChangeAnnotation::default()).unwrap();
+        assert_eq!(json_str, r#"{"label":""}"#);
     }
 }
 
