@@ -333,6 +333,35 @@ mod tests {
         let json_str = serde_json::to_string(&ChangeAnnotation::default()).unwrap();
         assert_eq!(json_str, r#"{"label":""}"#);
     }
+
+    #[test]
+    fn test_impls() {
+        // Ord
+        let pos1 = Position {
+            line: 0,
+            character: 9,
+        };
+        let pos2 = Position {
+            line: 1,
+            character: 0,
+        };
+        assert!(pos1 < pos2);
+
+        let pos1 = Position {
+            line: 0,
+            character: 9,
+        };
+        let pos2 = Position {
+            line: 0,
+            character: 10,
+        };
+        assert!(pos1 < pos2);
+
+        // Copy
+        let pos1 = Position::default();
+        let pos2 = pos1;
+        assert!(pos1 == pos2);
+    }
 }
 
 fn main() {

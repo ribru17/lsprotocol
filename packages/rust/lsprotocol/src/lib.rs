@@ -5655,7 +5655,7 @@ pub struct DeclarationOptions {
 /// that denotes `\r|\n` or `\n|` where `|` represents the character offset.
 ///
 /// @since 3.17.0 - support for negotiated position encoding.
-#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone, Default, Copy)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone, Default, Copy, PartialOrd, Ord)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct Position {
     /// Line position in a document (zero-based).
