@@ -391,6 +391,29 @@ mod tests {
             r#"{"jsonrpc":"2.0","id":1,"error":{"code":-32600,"message":"bad req"}}"#
         );
     }
+
+    #[test]
+    fn test_request() {
+        // `jsonrpc` field should be implicitly serialized without the user needing to do it. The
+        // `method` should also be properly inferred from the request type.
+        let req = RequestMessage::from_request::<WorkspaceFoldersRequest>(LSPId::Int(1), LSPNull);
+        assert_eq!(
+            serde_json::to_string(&req).unwrap(),
+            r#"{"jsonrpc":"2.0","id":1,"method":"workspace/workspaceFolders","params":null}"#
+        );
+
+        let req = RequestMessage::from_request::<DocumentSymbolRequest>(LSPId::String("the-id".into()), DocumentSymbolParams {
+            text_document: TextDocumentIdentifier {
+                uri: url::Url::parse("file:///test").unwrap()
+            },
+            work_done_token: None,
+            partial_result_token: None,
+        });
+        assert_eq!(
+            serde_json::to_string(&req).unwrap(),
+            r#"{"jsonrpc":"2.0","id":"the-id","method":"textDocument/documentSymbol","params":{"textDocument":{"uri":"file:///test"}}}"#
+        );
+    }
 }
 
 fn main() {
