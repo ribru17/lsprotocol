@@ -362,6 +362,35 @@ mod tests {
         let pos2 = pos1;
         assert!(pos1 == pos2);
     }
+
+    #[test]
+    fn test_response() {
+        // Success: `error` property should *NOT* be present. `jsonrpc` property should be
+        // implicitly serialized, without the user needing to do it.
+        let resp = ResponseMessage::from_ok(
+            LSPIdOptional::Int(1),
+            serde_json::to_value(Position::default()).unwrap(),
+        );
+        assert_eq!(
+            serde_json::to_string(&resp).unwrap(),
+            r#"{"jsonrpc":"2.0","id":1,"result":{"character":0,"line":0}}"#
+        );
+
+        // Failure: `result` property should *NOT* be present. `jsonrpc` property should be
+        // implicitly serialized, without the user needing to do it.
+        let resp = ResponseMessage::from_error(
+            LSPIdOptional::Int(1),
+            ResponseError {
+                code: OR2::T(ErrorCodes::InvalidRequest),
+                message: "bad req".into(),
+                data: None,
+            },
+        );
+        assert_eq!(
+            serde_json::to_string(&resp).unwrap(),
+            r#"{"jsonrpc":"2.0","id":1,"error":{"code":-32600,"message":"bad req"}}"#
+        );
+    }
 }
 
 fn main() {

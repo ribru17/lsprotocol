@@ -485,10 +485,10 @@ def generate_required_request_types(
         [
             "#[derive(Clone, PartialEq, Eq, Deserialize, Serialize, Debug)]",
             "pub struct ResponseError {",
-            "    code: OR2<ErrorCodes, LSPErrorCodes>,",
-            "    message: String,",
+            "    pub code: OR2<ErrorCodes, LSPErrorCodes>,",
+            "    pub message: String,",
             '    #[serde(skip_serializing_if = "Option::is_none")]',
-            "    data: Option<LSPAny>,",
+            "    pub data: Option<LSPAny>,",
             "}",
         ],
     )
