@@ -523,13 +523,16 @@ def generate_requests(spec: model.LSPModel, types: TypeData) -> Dict[str, List[s
             "    {",
             "        // This must always be either an Array or an Object. This will be guaranteed by the LSP,",
             "        // as to conform to the JSON-RPC spec.",
-            '        let params = serde_json::to_value(params).expect("Request parameters should be serializable.");',
+            '        let params = match serde_json::to_value(params).expect("Request parameters should be serializable.") {',
+            "            serde_json::Value::Null => None,",
+            "            value => Some(value),",
+            "        };",
             "",
             "        Self {",
             "            jsonrpc: Version,",
             "            id,",
             "            method: R::METHOD,",
-            "            params: Some(params),",
+            "            params,",
             "        }",
             "    }",
             "}",
@@ -550,7 +553,7 @@ def generate_request(
     name = get_name(request_def)
     doc = _get_doc(request_def.documentation)
     extras = generate_extras(request_def)
-    params = get_type_name(request_def.params, types, spec) if request_def.params else "LSPNull"
+    params = get_type_name(request_def.params, types, spec) + ";" if request_def.params else "(); // No params"
     result = get_type_name(request_def.result, types, spec) if request_def.params else "LSPNull"
     lines = doc + extras + [
         "#[derive(Debug)]",
@@ -558,7 +561,7 @@ def generate_request(
         "",
         f"impl Request for {name} {{",
         f"    const METHOD: LSPRequestMethods = LSPRequestMethods::{fix_lsp_method_name(request_def.method)};",
-        f"    type Params = {params};",
+        f"    type Params = {params}",
         f"    type Result = {result};",
         "}",
     ]

@@ -10276,14 +10276,18 @@ impl RequestMessage {
     pub fn from_request<R: Request>(id: LSPId, params: R::Params) -> Self {
         // This must always be either an Array or an Object. This will be guaranteed by the LSP,
         // as to conform to the JSON-RPC spec.
-        let params =
-            serde_json::to_value(params).expect("Request parameters should be serializable.");
+        let params = match serde_json::to_value(params)
+            .expect("Request parameters should be serializable.")
+        {
+            serde_json::Value::Null => None,
+            value => Some(value),
+        };
 
         Self {
             jsonrpc: Version,
             id,
             method: R::METHOD,
-            params: Some(params),
+            params,
         }
     }
 }
@@ -10409,7 +10413,7 @@ pub struct WorkspaceFoldersRequest;
 
 impl Request for WorkspaceFoldersRequest {
     const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceWorkspaceFolders;
-    type Params = LSPNull;
+    type Params = (); // No params
     type Result = LSPNull;
 }
 
@@ -10475,7 +10479,7 @@ pub struct FoldingRangeRefreshRequest;
 
 impl Request for FoldingRangeRefreshRequest {
     const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceFoldingRangeRefresh;
-    type Params = LSPNull;
+    type Params = (); // No params
     type Result = LSPNull;
 }
 
@@ -10589,7 +10593,7 @@ pub struct SemanticTokensRefreshRequest;
 
 impl Request for SemanticTokensRefreshRequest {
     const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceSemanticTokensRefresh;
-    type Params = LSPNull;
+    type Params = (); // No params
     type Result = LSPNull;
 }
 
@@ -10732,7 +10736,7 @@ pub struct InlineValueRefreshRequest;
 
 impl Request for InlineValueRefreshRequest {
     const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceInlineValueRefresh;
-    type Params = LSPNull;
+    type Params = (); // No params
     type Result = LSPNull;
 }
 
@@ -10770,7 +10774,7 @@ pub struct InlayHintRefreshRequest;
 
 impl Request for InlayHintRefreshRequest {
     const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceInlayHintRefresh;
-    type Params = LSPNull;
+    type Params = (); // No params
     type Result = LSPNull;
 }
 
@@ -10806,7 +10810,7 @@ pub struct DiagnosticRefreshRequest;
 
 impl Request for DiagnosticRefreshRequest {
     const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceDiagnosticRefresh;
-    type Params = LSPNull;
+    type Params = (); // No params
     type Result = LSPNull;
 }
 
@@ -10898,7 +10902,7 @@ pub struct ShutdownRequest;
 
 impl Request for ShutdownRequest {
     const METHOD: LSPRequestMethods = LSPRequestMethods::Shutdown;
-    type Params = LSPNull;
+    type Params = (); // No params
     type Result = LSPNull;
 }
 
@@ -11111,7 +11115,7 @@ pub struct CodeLensRefreshRequest;
 
 impl Request for CodeLensRefreshRequest {
     const METHOD: LSPRequestMethods = LSPRequestMethods::WorkspaceCodeLensRefresh;
-    type Params = LSPNull;
+    type Params = (); // No params
     type Result = LSPNull;
 }
 
