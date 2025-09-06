@@ -449,7 +449,10 @@ mod tests {
         let str_form = serde_json::to_string(&prog_begin).unwrap();
 
         assert_eq!(str_form, r#"{"kind":"begin","title":""}"#);
-        assert_eq!(serde_json::from_str::<WorkDoneProgressBegin>(&str_form).unwrap(), prog_begin);
+        assert_eq!(
+            serde_json::from_str::<WorkDoneProgressBegin>(&str_form).unwrap(),
+            prog_begin
+        );
 
         let prog_report = WorkDoneProgressReport {
             cancellable: Some(true),
@@ -458,8 +461,14 @@ mod tests {
         };
         let str_form = serde_json::to_string(&prog_report).unwrap();
 
-        assert_eq!(str_form, r#"{"kind":"report","cancellable":true,"percentage":12}"#);
-        assert_eq!(serde_json::from_str::<WorkDoneProgressReport>(&str_form).unwrap(), prog_report);
+        assert_eq!(
+            str_form,
+            r#"{"kind":"report","cancellable":true,"percentage":12}"#
+        );
+        assert_eq!(
+            serde_json::from_str::<WorkDoneProgressReport>(&str_form).unwrap(),
+            prog_report
+        );
     }
 }
 

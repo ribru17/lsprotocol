@@ -7,10 +7,10 @@
 // 2. Install nox: `python -m pip install nox`
 // 3. Run command: `python -m nox --session build_lsp`
 
-use rust_decimal::Decimal;
+pub use rust_decimal::Decimal;
 use serde::{de::DeserializeOwned, Deserialize, Deserializer, Serialize, Serializer};
 use std::collections::HashMap;
-use url::Url;
+pub use url::Url;
 /// This allows a field to have two types.
 #[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone)]
 #[serde(untagged)]
