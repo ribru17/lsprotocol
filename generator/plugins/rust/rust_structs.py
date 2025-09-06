@@ -15,6 +15,7 @@ from .rust_commons import (
     get_message_type_name,
     get_name,
     get_type_name,
+    is_string_literal_property,
     struct_wrapper,
     type_alias_wrapper,
     fix_lsp_method_name,
@@ -277,7 +278,8 @@ def generate_struct(
 ) -> None:
     inner = []
     for prop_def in get_extended_properties(struct_def, spec):
-        inner += generate_property(prop_def, types, spec)
+        if not is_string_literal_property(prop_def):
+            inner += generate_property(prop_def, types, spec)
 
     lines = struct_wrapper(struct_def, inner, types, spec)
     types.add_type_info(struct_def, struct_def.name, lines)

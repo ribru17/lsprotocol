@@ -440,6 +440,27 @@ mod tests {
             r#"{"jsonrpc":"2.0","method":"window/showMessage","params":{"message":"hello","type":3}}"#
         );
     }
+
+    #[test]
+    fn test_string_literal_properties() {
+        // String literal fields should be transparent to the rust implementation, and should
+        // (de)serialize as needed, automagically.
+        let prog_begin = WorkDoneProgressBegin::default();
+        let str_form = serde_json::to_string(&prog_begin).unwrap();
+
+        assert_eq!(str_form, r#"{"kind":"begin","title":""}"#);
+        assert_eq!(serde_json::from_str::<WorkDoneProgressBegin>(&str_form).unwrap(), prog_begin);
+
+        let prog_report = WorkDoneProgressReport {
+            cancellable: Some(true),
+            message: None,
+            percentage: Some(12),
+        };
+        let str_form = serde_json::to_string(&prog_report).unwrap();
+
+        assert_eq!(str_form, r#"{"kind":"report","cancellable":true,"percentage":12}"#);
+        assert_eq!(serde_json::from_str::<WorkDoneProgressReport>(&str_form).unwrap(), prog_report);
+    }
 }
 
 fn main() {

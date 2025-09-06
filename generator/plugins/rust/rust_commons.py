@@ -632,12 +632,20 @@ def struct_wrapper(
 ) -> List[str]:
     name = get_name(type_def)
     default = ""
+    stringLiteralTag = ""
     if isinstance(type_def, model.Structure):
         defaultable = True
+        foundStringLiteral = False
         for prop in get_extended_properties(type_def, spec):
             if not is_defaultable(prop.type, types, spec, prop.optional):
                 defaultable = False
-                break
+            if is_string_literal_property(prop):
+                if foundStringLiteral:
+                    raise Exception(f"Multiple stringLiteral properties for struct {name}")
+                foundStringLiteral = True
+                # NOTE: This may be problematic due to the following serde bug:
+                # https://github.com/serde-rs/serde/issues/2666
+                stringLiteralTag = f', tag = "{prop.name}", rename = "{prop.type.value}"'
         if defaultable:
             default = ", Default"
 
@@ -649,7 +657,7 @@ def struct_wrapper(
         + generate_extras(type_def)
         + [
             f"#[derive(Serialize, Deserialize, PartialEq, Debug, Eq, Clone{default}{copy}{ord})]",
-            '#[serde(rename_all = "camelCase", deny_unknown_fields)]',
+            f'#[serde(rename_all = "camelCase"{stringLiteralTag})]',
             f"pub struct {name}",
             "{",
         ]
@@ -692,7 +700,8 @@ def generate_literal_struct_type(
 
     inner = []
     for prop_def in type_def.value.properties:
-        inner += generate_property(prop_def, types, spec)
+        if not is_string_literal_property(prop_def):
+            inner += generate_property(prop_def, types, spec)
 
     lines = struct_wrapper(type_def, inner, types, spec)
     types.add_type_info(type_def, type_def.name, lines)
