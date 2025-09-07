@@ -335,7 +335,7 @@ mod tests {
     }
 
     #[test]
-    fn test_impls() {
+    fn test_position_impls() {
         // Ord
         let pos1 = Position {
             line: 0,
@@ -469,6 +469,85 @@ mod tests {
             serde_json::from_str::<WorkDoneProgressReport>(&str_form).unwrap(),
             prog_report
         );
+    }
+
+    #[test]
+    fn test_workspace_edit() {
+        let ws_edit = WorkspaceEdit {
+            changes: None,
+            change_annotations: None,
+            document_changes: Some(vec![OR4::U(CreateFile {
+                uri: Url::parse("file:///hello").unwrap(),
+                options: None,
+                annotation_id: None,
+            })]),
+        };
+        let str_form = serde_json::to_string(&ws_edit).unwrap();
+
+        assert_eq!(
+            str_form,
+            r#"{"documentChanges":[{"kind":"create","uri":"file:///hello"}]}"#
+        );
+        assert_eq!(
+            serde_json::from_str::<WorkspaceEdit>(&str_form).unwrap(),
+            ws_edit
+        );
+    }
+
+    // Currently fails due to a serde issue with internally tagged structs
+    // #[test]
+    // fn test_file_edits() {
+    //     let edits: OR3<CreateFile, RenameFile, DeleteFile> = serde_json::from_str(r#"{"kind":"delete","uri":"file:///tmp/test.txt"}"#).unwrap();
+    //     assert_eq!(edits, OR3::V(DeleteFile {
+    //         uri: Url::parse("file:///tmp/test.txt").unwrap(),
+    //         options: None,
+    //         annotation_id: None,
+    //     }));
+    // }
+
+    #[test]
+    fn test_copies() {
+        let pos = Position::default();
+        let range = Range::default();
+        let pos2 = pos;
+        let range2 = range;
+        assert_eq!(pos, pos2);
+        assert_eq!(range, range2);
+    }
+
+    #[test]
+    fn test_message_type() {
+        let params = ShowMessageParams {
+            type_: MessageType::Debug,
+            message: "test".into(),
+        };
+        let str_form = serde_json::to_string(&params).unwrap();
+        assert_eq!(r#"{"type":5,"message":"test"}"#, str_form);
+        let params = ShowMessageParams {
+            type_: MessageType::Error,
+            message: "test".into(),
+        };
+        let str_form = serde_json::to_string(&params).unwrap();
+        assert_eq!(r#"{"type":1,"message":"test"}"#, str_form);
+        let params = ShowMessageParams {
+            type_: MessageType::Warning,
+            message: "".into(),
+        };
+        let str_form = serde_json::to_string(&params).unwrap();
+        assert_eq!(r#"{"type":2,"message":""}"#, str_form);
+    }
+
+    #[test]
+    fn test_error_codes() {
+        let codes: ErrorCodes = serde_json::from_str("123").unwrap();
+        assert_eq!(codes, ErrorCodes::Custom(123));
+        let codes: ErrorCodes = serde_json::from_str("-32700").unwrap();
+        assert_eq!(codes, ErrorCodes::ParseError);
+
+        let codes: LSPErrorCodes = serde_json::from_str("123").unwrap();
+        assert_eq!(codes, LSPErrorCodes::Custom(123));
+        let codes: LSPErrorCodes = serde_json::from_str("-32802").unwrap();
+        assert_eq!(codes, LSPErrorCodes::ServerCancelled);
     }
 }
 
